@@ -52,8 +52,8 @@ build/
 *~.nib
 
 ### Environment Files ###
-#.env
-#.env.*
+.env
+.env.*
 
 ### Operating System Files ###
 # Mac OS
