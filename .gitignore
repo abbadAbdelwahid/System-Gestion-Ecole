@@ -53,7 +53,7 @@ build/
 
 ### Environment Files ###
 .env
-.env.*
+
 
 ### Operating System Files ###
 # Mac OS
