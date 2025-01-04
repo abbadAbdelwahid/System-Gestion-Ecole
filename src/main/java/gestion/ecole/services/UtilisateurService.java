@@ -10,6 +10,7 @@ public class UtilisateurService {
     private final UtilisateurDAO utilisateurDAO;
 
     public UtilisateurService() {
+
         this.utilisateurDAO = new UtilisateurDAO();
     }
 
@@ -54,4 +55,8 @@ public class UtilisateurService {
         }
         return verifyPassword(plainPassword, utilisateur.getPassword());
     }
+    public Utilisateur getUserByUsername(String username) {
+        return utilisateurDAO.getByUsername(username);
+    }
+
 }

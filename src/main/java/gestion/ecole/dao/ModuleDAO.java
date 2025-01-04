@@ -101,4 +101,23 @@ public class ModuleDAO implements CRUD<Module> {
             return false;
         }
     }
+    public String getProfessorWithMostModules() {
+        try {
+            String query = "SELECT p.nom, p.prenom, COUNT(m.id) AS module_count " +
+                    "FROM modules m " +
+                    "JOIN professeurs p ON m.professeur_id = p.id " +
+                    "GROUP BY p.nom, p.prenom " +
+                    "ORDER BY module_count DESC " +
+                    "LIMIT 1";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("nom") + " " + rs.getString("prenom");
+            }
+        } catch (Exception e) {
+            System.out.println("Error fetching most active professor: " + e.getMessage());
+        }
+        return null; // Return null if no data is found or an error occurs
+    }
+
 }

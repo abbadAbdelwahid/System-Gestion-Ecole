@@ -3,11 +3,11 @@ package gestion.ecole.dao;
 import gestion.ecole.models.Inscription;
 import gestion.ecole.utils.DatabaseConnexion;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+
+import java.util.*;
+
+
 
 public class InscriptionDAO implements CRUD<Inscription> {
     private final Connection connection;
@@ -101,4 +101,44 @@ public class InscriptionDAO implements CRUD<Inscription> {
             return false;
         }
     }
+    public String getMostPopularModule() {
+        try {
+            String query = "SELECT m.nom_module, COUNT(i.module_id) AS enrollments " +
+                    "FROM inscriptions i " +
+                    "JOIN modules m ON i.module_id = m.id " +
+                    "GROUP BY m.nom_module " +
+                    "ORDER BY enrollments DESC " +
+                    "LIMIT 1";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("nom_module");
+            }
+        } catch (Exception e) {
+            System.out.println("Error fetching most popular module: " + e.getMessage());
+        }
+        return null; // Return null if no data is found or an error occurs
+    }
+    public Map<String, Integer> getModulesWithStudentCounts() {
+        Map<String, Integer> moduleStatistics = new HashMap<>();
+        try {
+            String query = "SELECT m.nom_module, COUNT(i.etudiant_id) AS student_count " +
+                    "FROM inscriptions i " +
+                    "JOIN modules m ON i.module_id = m.id " +
+                    "GROUP BY m.nom_module " +
+                    "ORDER BY student_count DESC " +
+                    "LIMIT 5";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                moduleStatistics.put(rs.getString("nom_module"), rs.getInt("student_count"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error fetching module statistics: " + e.getMessage());
+        }
+        return moduleStatistics;
+    }
+
+
+
 }
