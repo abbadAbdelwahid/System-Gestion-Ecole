@@ -54,8 +54,8 @@ public class LoginController {
 
     private void loadMainView(String role) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/dashboard.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/admin-interface.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);

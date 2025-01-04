@@ -6,7 +6,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="gestion.ecole.controllers.DashboardController">
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gestion.ecole.controllers.DashboardController">
     <HBox spacing="0" style="-fx-background-color: #f8f9fa;">
         <!-- Sidebar -->
         <VBox alignment="TOP_LEFT" spacing="20" style="-fx-min-width: 250; -fx-background-color: #2c3e50; -fx-padding: 20;">
@@ -19,7 +20,7 @@
         </VBox>
 
         <!-- Main Content -->
-        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 20; -fx-background-color: #f8f9fa; -fx-pref-width: 100%;">
+        <VBox alignment="CENTER" prefHeight="626.0" prefWidth="831.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #f8f9fa; -fx-pref-width: 100%;">
             <!-- Header -->
             <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Tableau de Bord" />
 
@@ -39,19 +40,22 @@
                 </VBox>
             </HBox>
 
-            <!-- Graph Section -->
-            <VBox alignment="CENTER" spacing="15" style="-fx-min-width: 600; -fx-padding: 10; -fx-background-color: #ffffff; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
-                <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Statistiques des Modules" />
-                <Pane fx:id="graphPane" style="-fx-background-color: #f0f0f0; -fx-pref-height: 200; -fx-pref-width: 500; -fx-background-radius: 10;" />
-            </VBox>
+            <!-- Graph and Additional Info Side by Side -->
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="334.0" prefWidth="791.0" spacing="20">
+                <!-- Graph Section -->
+                <VBox alignment="CENTER" prefHeight="282.0" prefWidth="495.0" spacing="15" style="-fx-min-width: 50%; -fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Statistiques des Modules" />
+                    <Pane fx:id="graphPane" maxHeight="-Infinity" prefHeight="500.0" prefWidth="455.0" style="-fx-background-color: #f0f0f0; -fx-pref-height: 200; -fx-pref-width: 500; -fx-background-radius: 10;" />
+                </VBox>
 
-            <!-- Additional Info Section -->
-            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 10; -fx-background-color: #f0f0f0; -fx-background-radius: 10;">
-                <Label style="-fx-font-size: 16px;" text="Module le plus suivi:" />
-                <Label fx:id="mostPopularModuleLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-                <Label style="-fx-font-size: 16px;" text="Professeur le plus actif:" />
-                <Label fx:id="mostActiveProfessorLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
-            </VBox>
+                <!-- Additional Info Section -->
+                <VBox alignment="CENTER" prefHeight="237.0" prefWidth="210.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #f0f0f0; -fx-background-radius: 10; -fx-min-width: 50%;">
+                    <Label style="-fx-font-size: 16px;" text="Module le plus suivi:" />
+                    <Label fx:id="mostPopularModuleLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                    <Label style="-fx-font-size: 16px;" text="Professeur le plus actif:" />
+                    <Label fx:id="mostActiveProfessorLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                </VBox>
+            </HBox>
         </VBox>
     </HBox>
 </AnchorPane>

@@ -2,11 +2,14 @@ package gestion.ecole.controllers;
 
 import gestion.ecole.services.DashboardService;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Side;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
@@ -64,7 +67,7 @@ public class DashboardController {
         // Modify module names to truncate if too long
         Map<String, Integer> formattedModuleStatistics = new HashMap<>();
         moduleStatistics.forEach((module, count) -> {
-            String formattedName = module.length() > 10 ? module.substring(0, 10) + "..." : module;
+            String formattedName = module.length() > 12 ? module.substring(0, 12) + "..." : module;
             formattedModuleStatistics.put(formattedName, count);
         });
 
@@ -74,14 +77,14 @@ public class DashboardController {
         xAxis.setLabel("Modules");
         yAxis.setLabel("Nombre d'étudiants");
 
-        // Reduce label rotation (optional for smaller charts)
-        xAxis.setTickLabelRotation(0);
+        // Adjust label rotation for readability
+        xAxis.setTickLabelRotation(0); // Keep labels horizontal
 
         // Create BarChart
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
         barChart.setTitle("Statistiques des Modules");
-        barChart.setPrefHeight(200); // Set smaller height
-        barChart.setPrefWidth(500); // Set smaller width
+        barChart.setPrefHeight(250); // Match the pane height
+        barChart.setPrefWidth(450);  // Match the pane width
 
         // Add data to chart
         XYChart.Series<String, Number> dataSeries = new XYChart.Series<>();
@@ -92,14 +95,23 @@ public class DashboardController {
 
         barChart.getData().add(dataSeries);
 
-        // Resize chart to fit the smaller Pane
-        barChart.setPrefWidth(graphPane.getPrefWidth());
-        barChart.setPrefHeight(graphPane.getPrefHeight());
+        // Remove the legend if it's not needed
+        barChart.setLegendVisible(false);
 
         // Clear and add the chart to the Pane
         graphPane.getChildren().clear();
         graphPane.getChildren().add(barChart);
     }
+
+
+
+
+
+
+
+
+
+
 
 
 //    private void displayModuleStatisticsChart() {
