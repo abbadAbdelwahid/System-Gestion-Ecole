@@ -81,8 +81,8 @@ VALUES
 -- Insert users
 INSERT INTO utilisateurs (username, password, role)
 VALUES
-    ('admin', '$2a$10$paON8g8govlrodgTrQBNf.KT8b2zDDrH0goOEYvVnRtkD02yqOEBy', 'ADMIN'),
-    ('prof_rachid', '$2a$10$s7ncI/hN1nB1sEqHdvULTO1u8cCIvtRClvlEdpGs97gP4jC545kbW', 'PROFESSOR'),
-    ('sec_amina', '$2a$10$wzEsIS6T6jsjdxDPRYr4K.FGDMHapjiqqhheA//tytceO1IEON5Ya', 'SECRETARY'),
-    ('prof_salim', '$2a$10$YTobVrF9x4aXKyFlIP.Nr.LlBheCJLU9861UakkqzncOC4dFAv4p6', 'PROFESSOR'),
-    ('prof_omar', '$2a$10$d4tv05Ij.0Os26VM/aGHGue37vefKcr7qFgcDNVwb0o8gR9ce.dLi', 'PROFESSOR');
+    ('admin', '$2a$10$paON8g8govlrodgTrQBNf.KT8b2zDDrH0goOEYvVnRtkD02yqOEBy', 'admin'),
+    ('prof_rachid', '$2a$10$s7ncI/hN1nB1sEqHdvULTO1u8cCIvtRClvlEdpGs97gP4jC545kbW', 'professor'),
+    ('sec_amina', '$2a$10$wzEsIS6T6jsjdxDPRYr4K.FGDMHapjiqqhheA//tytceO1IEON5Ya', 'secretary'),
+    ('prof_salim', '$2a$10$YTobVrF9x4aXKyFlIP.Nr.LlBheCJLU9861UakkqzncOC4dFAv4p6', 'professor'),
+    ('prof_omar', '$2a$10$d4tv05Ij.0Os26VM/aGHGue37vefKcr7qFgcDNVwb0o8gR9ce.dLi', 'professor');

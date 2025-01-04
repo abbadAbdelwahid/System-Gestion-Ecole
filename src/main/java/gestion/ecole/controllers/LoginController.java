@@ -41,27 +41,30 @@ public class LoginController {
 
         boolean isAuthenticated = utilisateurService.authenticateUser(username, password);
         if (isAuthenticated) {
-            Utilisateur utilisateur = utilisateurService.getUserByUsername(username);
-            if (utilisateur != null) {
-                loadMainView(utilisateur.getRole());
-            } else {
-                errorLabel.setText("Erreur interne: utilisateur introuvable.");
-            }
+            loadMainView();
         } else {
             errorLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
         }
     }
 
-    private void loadMainView(String role) {
+    private void loadMainView() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/admin-interface.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/main-layout.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 1024, 768); // Set preferred width and height
+
+            // Pass the role to the MainController
+            MainController controller = fxmlLoader.getController();
+            controller.setUserRole(utilisateurService.getLoggedInUserRole());
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Dashboard - Gestion École");
+            stage.setTitle("Gestion École");
+            stage.setResizable(true); // Allow resizing if needed
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 }

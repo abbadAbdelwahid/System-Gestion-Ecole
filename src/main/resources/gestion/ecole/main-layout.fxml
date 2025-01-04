@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gestion.ecole.controllers.MainController">
+    <HBox spacing="0" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" style="-fx-background-color: #f8f9fa;">
+        <!-- Sidebar -->
+        <VBox fx:id="sidebar" alignment="TOP_LEFT" spacing="20" style="-fx-min-width: 250; -fx-background-color: #2c3e50; -fx-padding: 20;">
+            <Label style="-fx-font-size: 24px; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-padding: 10 0;" text="Gestion École" />
+            <Button fx:id="dashboardButton" onAction="#handleDashboardClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Dashboard" />
+            <Button fx:id="etudiantsButton" onAction="#handleEtudiantsClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Étudiants" />
+            <Button fx:id="modulesButton" onAction="#handleModulesClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Modules" />
+            <Button fx:id="professeursButton" onAction="#handleProfesseursClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Professeurs" />
+            <Button fx:id="logoutButton" onAction="#handleLogoutClick" style="-fx-background-color: #e74c3c; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Déconnexion" />
+        </VBox>
+
+        <!-- Main Content -->
+        <Pane fx:id="contentPane" style="-fx-padding: 20; -fx-background-color: #f8f9fa; -fx-pref-width: 100%; -fx-pref-height: 100%;" />
+    </HBox>
+</AnchorPane>
