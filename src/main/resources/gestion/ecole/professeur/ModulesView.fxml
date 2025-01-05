@@ -51,5 +51,10 @@
                 </VBox>
             </HBox>
         </VBox>
+        <HBox alignment="CENTER" prefWidth="544.0" spacing="10">
+            <Button onAction="#exportToCSV" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;" text="Exporter CSV" />
+            <Button onAction="#exportToPDF" style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold;" text="Exporter PDF" />
+        </HBox>
+
     </VBox>
 </AnchorPane>
