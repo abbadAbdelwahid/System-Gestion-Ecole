@@ -20,17 +20,19 @@ public class ProfesseurDAO implements CRUD<Professeur> {
     @Override
     public boolean insert(Professeur professeur) {
         try {
-            String query = "INSERT INTO professeurs (nom, prenom, specialite) VALUES (?, ?, ?)";
+            String query = "INSERT INTO professeurs (nom, prenom, specialite, utilisateur_id) VALUES (?, ?, ?, ?)";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, professeur.getNom());
             ps.setString(2, professeur.getPrenom());
             ps.setString(3, professeur.getSpecialite());
+            ps.setInt(4, professeur.getUtilisateur_id()); // Ajout de utilisateur_id
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             System.out.println("Error inserting Professeur: " + e.getMessage());
             return false;
         }
     }
+
 
     @Override
     public Professeur get(int id) {

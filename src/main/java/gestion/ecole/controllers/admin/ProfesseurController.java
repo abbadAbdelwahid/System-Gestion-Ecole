@@ -2,6 +2,8 @@ package gestion.ecole.controllers.admin;
 
 
 import gestion.ecole.controllers.UserAwareController;
+import gestion.ecole.models.Utilisateur;
+import gestion.ecole.services.UtilisateurService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -113,20 +115,40 @@ public class ProfesseurController {
         String nom = nomField.getText();
         String prenom = prenomField.getText();
         String specialite = specialiteField.getText();
-        int utilisateurId = Integer.parseInt(utilisateurIdField.getText());
 
         if (!nom.isEmpty() && !prenom.isEmpty() && !specialite.isEmpty()) {
-            Professeur professeur = new Professeur(0, nom, prenom, specialite, utilisateurId);
-            if (professeurDAO.insert(professeur)) {
-                loadProfesseurs();
-                clearFields();
-            } else {
-                showAlert("Erreur", "Impossible d'ajouter le professeur.");
+            try {
+                // Générer le username et le password
+                String username = nom + prenom;
+                String password = "password"; // Mot de passe par défaut
+                String role = "professor";
+
+                // Créer un utilisateur via UtilisateurService
+                UtilisateurService utilisateurService = new UtilisateurService();
+                Utilisateur utilisateur = utilisateurService.addUser(username, password, role);
+
+                if (utilisateur != null) {
+                    // Insérer le professeur avec l'ID utilisateur
+                    int utilisateurId = utilisateur.getId();
+                    Professeur professeur = new Professeur(0, nom, prenom, specialite, utilisateurId);
+                    if (professeurDAO.insert(professeur)) {
+                        loadProfesseurs();
+                        clearFields();
+                        showAlert("Succès", "Le professeur a été ajouté avec succès.");
+                    } else {
+                        showAlert("Erreur", "Impossible d'ajouter le professeur.");
+                    }
+                } else {
+                    showAlert("Erreur", "Impossible de créer l'utilisateur.");
+                }
+            } catch (Exception e) {
+                showAlert("Erreur", "Une erreur s'est produite : " + e.getMessage());
             }
         } else {
             showAlert("Attention", "Veuillez remplir tous les champs.");
         }
     }
+
 
 
     @FXML
@@ -137,7 +159,6 @@ public class ProfesseurController {
             selected.setNom(nomField.getText());
             selected.setPrenom(prenomField.getText());
             selected.setSpecialite(specialiteField.getText());
-            selected.setUtilisateur_id(Integer.parseInt(utilisateurIdField.getText())); // Inclure utilisateur_id
 
             // Appel à la méthode update du DAO
             if (professeurDAO.update(selected)) {
