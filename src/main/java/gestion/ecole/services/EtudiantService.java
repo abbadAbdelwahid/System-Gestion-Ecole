@@ -12,6 +12,10 @@ public class EtudiantService {
         EtudiantDAO etudiantDAO = new EtudiantDAO();
         return etudiantDAO.getStudentsByModuleId(moduleId);
     }
+    public List<Etudiant> searchInStudentsByModule(int moduleId,String searchItem){
+        EtudiantDAO etudiantDAO = new EtudiantDAO();
+        return etudiantDAO.advancedSearch(moduleId,searchItem);
+    }
     public List<Etudiant> getStudentsByProfessor(int professorId) {
 
         ModuleService moduleService = new ModuleService();

@@ -111,23 +111,24 @@ public class EtudiantDAO implements CRUD<Etudiant> {
             return false;
         }
     }
-    public List<Etudiant> advancedSearch(String searchItem) {
+    public List<Etudiant> advancedSearch(int moduleId, String searchItem) {
         List<Etudiant> etudiants = new ArrayList<>();
         try {
             String query = "SELECT DISTINCT e.* " +
                     "FROM etudiants e, inscriptions i, modules m " +
                     "WHERE e.id = i.etudiant_id " +
                     "AND i.module_id = m.id " +
-                    "AND (e.matricule LIKE ? OR " +
-                    "     e.nom LIKE ? OR " +
-                    "     e.prenom LIKE ? OR " +
-                    "     e.email LIKE ? OR " +
-                    "     e.promotion LIKE ? OR " +
-                    "     m.nom_module LIKE ?)";
+                    "AND i.module_id = ? " +
+                    "AND (LOWER(e.matricule) LIKE ? OR " +
+                    "     LOWER(e.nom) LIKE ? OR " +
+                    "     LOWER(e.prenom) LIKE ? OR " +
+                    "     LOWER(e.email) LIKE ? OR " +
+                    "     LOWER(e.promotion) LIKE ?)";
 
             PreparedStatement ps = connection.prepareStatement(query);
-            String likePattern = "%" + searchItem + "%";
-            for (int i = 1; i <= 6; i++) {
+            ps.setInt(1, moduleId);
+            String likePattern = "%" + searchItem.toLowerCase() + "%";
+            for (int i = 2; i <= 6; i++) {
                 ps.setString(i, likePattern);
             }
 
@@ -144,10 +145,12 @@ public class EtudiantDAO implements CRUD<Etudiant> {
                 ));
             }
         } catch (Exception e) {
-            System.out.println("Error performing smart search: " + e.getMessage());
+            System.out.println("Error performing advanced search: " + e.getMessage());
         }
         return etudiants;
     }
+
+
     public List<Etudiant> getStudentsByModuleId(int moduleId) {
         List<Etudiant> students = new ArrayList<>();
         try {
