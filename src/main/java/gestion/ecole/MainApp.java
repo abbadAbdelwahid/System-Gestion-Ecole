@@ -5,17 +5,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
+
+
 public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Load the login view
+        // Load the login view as the initial scene
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load()); // No need for dimensions here; they're set in FXML
+        Scene scene = new Scene(fxmlLoader.load()); // Set initial dimensions for the window
 
-        // Configure the primary stage
+        // Configure the stage
         primaryStage.setTitle("Gestion École");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false); // Lock the size
+        primaryStage.setResizable(false); // Disable resizing for a cleaner interface
         primaryStage.show();
     }
 

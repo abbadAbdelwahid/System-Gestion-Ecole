@@ -43,7 +43,8 @@ public class ProfesseurDAO implements CRUD<Professeur> {
                         rs.getInt("id"),
                         rs.getString("nom"),
                         rs.getString("prenom"),
-                        rs.getString("specialite")
+                        rs.getString("specialite"),
+                        rs.getInt("utilisateur_id")
                 );
             }
         } catch (Exception e) {
@@ -64,7 +65,8 @@ public class ProfesseurDAO implements CRUD<Professeur> {
                         rs.getInt("id"),
                         rs.getString("nom"),
                         rs.getString("prenom"),
-                        rs.getString("specialite")
+                        rs.getString("specialite"),
+                        rs.getInt("utilisateur_id")
                 ));
             }
         } catch (Exception e) {
@@ -119,12 +121,28 @@ public class ProfesseurDAO implements CRUD<Professeur> {
                         rs.getInt("id"),
                         rs.getString("nom"),
                         rs.getString("prenom"),
-                        rs.getString("specialite")
+                        rs.getString("specialite"),
+                        rs.getInt("utilisateur_id")
                 ));
             }
         } catch (Exception e) {
             System.out.println("Error searching professors by module: " + e.getMessage());
         }
         return professeurs;
+    }
+    // Method to get the professor's ID by the user ID
+    public Integer getProfesseurIdByUserId(int userId) {
+        try {
+            String query = "SELECT id FROM professeurs WHERE utilisateur_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (Exception e) {
+            System.out.println("Error fetching professor ID by user ID: " + e.getMessage());
+        }
+        return null;
     }
 }

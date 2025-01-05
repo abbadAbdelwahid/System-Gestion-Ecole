@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -24,12 +25,30 @@ public class MainController {
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
     private String userRole;
+    private int userId; // To store the user ID
+    @FXML
+    private Label userLabel;
+
+    private String userName;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+
+    }
+
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     /**
      * This method is called by the LoginController to set the role of the logged-in user.
      */
     public void setUserRole(String role) {
         this.userRole = role;
+        if (userLabel != null) {
+            userLabel.setText("Bienvenue, " + userName);
+        }
 
         // Dynamically update the sidebar based on the user's role
         updateSidebarForRole(userRole);
@@ -49,7 +68,6 @@ public class MainController {
     private void updateSidebarForRole(String role) {
         // Normalize role to lowercase
         String normalizedRole = role.toLowerCase();
-        System.out.println(normalizedRole);
 
         sidebar.getChildren().clear();
 
@@ -74,8 +92,8 @@ public class MainController {
 
             case "professor":
                 sidebar.getChildren().addAll(
-                        createButton("Mes Cours", "/gestion/ecole/professeur/MesCoursView.fxml"),
-                        createButton("Mes Étudiants", "/gestion/ecole/professeur/MesEtudiantsView.fxml"),
+                        createButton("Mes Cours", "/gestion/ecole/professeur/ModulesView.fxml"),
+//                        createButton("Mes Étudiants", "/gestion/ecole/professeur/EtudiantsView.fxml"),
                         logoutButton
                 );
                 break;
@@ -84,31 +102,6 @@ public class MainController {
                 throw new IllegalArgumentException("Unknown role: " + role);
         }
     }
-
-
-    /**
-     * Creates a button for the sidebar with an action to load a specific view.
-     */
-    private Button createButton(String text, String fxmlPath) {
-        Button button = new Button(text);
-        button.setStyle("-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
-        button.setOnAction(event -> loadView(fxmlPath));
-        return button;
-    }
-
-    /**
-     * Loads a specific view into the content pane.
-     */
-    private void loadView(String fxmlPath) {
-        try {
-            Pane newView = FXMLLoader.load(getClass().getResource(fxmlPath));
-            contentPane.getChildren().clear();
-            contentPane.getChildren().add(newView);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Handles the click on the Dashboard button.
      * Loads the appropriate view based on the user's role.
@@ -166,13 +159,65 @@ public class MainController {
         }
     }
 
+
+    /**
+     * Creates a button for the sidebar with an action to load a specific view.
+     */
+    private Button createButton(String text, String fxmlPath) {
+        Button button = new Button(text);
+        button.setStyle("-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+        button.setOnAction(event -> {
+            loadView(fxmlPath);
+            highlightButton(button); // Highlight the clicked button
+        });
+        return button;
+    }
+
+    /**
+     * Highlights the clicked button in the sidebar.
+     */
+    private void highlightButton(Button button) {
+        sidebar.getChildren().forEach(node -> {
+            if (node instanceof Button) {
+                node.setStyle("-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+            }
+        });
+        button.setStyle("-fx-background-color: #2c3e50; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+    }
+
+    /**
+     * Loads a specific view into the content pane.
+     */
+    private void loadView(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Pane newView = loader.load();
+
+            // Dynamically pass userId to controllers implementing UserAwareController
+            Object controller = loader.getController();
+            if (controller instanceof UserAwareController) {
+                System.out.println("hi "+userId);
+                ((UserAwareController) controller).setUserId(userId);
+            }
+
+            // Replace content pane with the new view
+            contentPane.getChildren().clear();
+            contentPane.getChildren().add(newView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     /**
      * Handles the logout button click and redirects to the login page.
      */
     @FXML
     private void handleLogoutClick() {
+        utilisateurService.logout(); // Clear the logged-in user state
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/secretaire/login.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/login.fxml"));
             Stage stage = (Stage) logoutButton.getScene().getWindow();
             stage.setScene(new Scene(fxmlLoader.load()));
             stage.setTitle("Login - Gestion École");
@@ -188,12 +233,16 @@ public class MainController {
         // Trigger the appropriate button for the default view based on the user role
         if ("admin".equals(userRole)) {
             triggerButtonClick(sidebar.getChildren().get(0)); // Dashboard button for admin
-        } else if ("secretaire".equals(userRole)) {
-            triggerButtonClick(sidebar.getChildren().get(0)); // Étudiants button for secretaire
-        } else if ("professeur".equals(userRole)) {
-            triggerButtonClick(sidebar.getChildren().get(0)); // Mes Cours button for professeur
+        } else if ("secretary".equals(userRole)) {
+            triggerButtonClick(sidebar.getChildren().get(0)); // Étudiants button for secretary
+        } else if ("professor".equals(userRole)) {
+            triggerButtonClick(sidebar.getChildren().get(0)); // Mes Cours button for professor
         }
     }
+
+    /**
+     * Programmatically triggers a button click to load the default view.
+     */
     private void triggerButtonClick(javafx.scene.Node node) {
         if (node instanceof Button) {
             ((Button) node).fire();

@@ -16,5 +16,9 @@ module gestion.ecole {
     exports gestion.ecole.models;
     exports gestion.ecole.dao;
     exports gestion.ecole.controllers.admin;
+    exports gestion.ecole.controllers.professeur;
+//    exports gestion.ecole.controllers.secretaire;
     opens gestion.ecole.controllers.admin to javafx.fxml;
+    opens gestion.ecole.controllers.professeur to javafx.fxml;
+//    opens gestion.ecole.controllers.professeur to javafx.fxml;
 }

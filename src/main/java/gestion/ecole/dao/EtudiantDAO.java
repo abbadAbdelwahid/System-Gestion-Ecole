@@ -148,5 +148,31 @@ public class EtudiantDAO implements CRUD<Etudiant> {
         }
         return etudiants;
     }
+    public List<Etudiant> getStudentsByModuleId(int moduleId) {
+        List<Etudiant> students = new ArrayList<>();
+        try {
+            String query = "SELECT e.* FROM etudiants e " +
+                    "JOIN inscriptions i ON e.id = i.etudiant_id " +
+                    "WHERE i.module_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, moduleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                students.add(new Etudiant(
+                        rs.getInt("id"),
+                        rs.getString("matricule"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getDate("date_naissance").toLocalDate(),
+                        rs.getString("email"),
+                        rs.getString("promotion")
+                ));
+            }
+        } catch (Exception e) {
+            System.out.println("Error fetching students by module ID: " + e.getMessage());
+        }
+        return students;
+    }
+
 
 }

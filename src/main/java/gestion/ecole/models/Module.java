@@ -23,4 +23,9 @@ public class Module {
     public void setCodeModule(String codeModule) { this.codeModule = codeModule; }
     public int getProfesseurId() { return professeurId; }
     public void setProfesseurId(int professeurId) { this.professeurId = professeurId; }
+    @Override
+    public String toString() {
+        return nomModule + " (" + codeModule + ")";
+    }
+
 }

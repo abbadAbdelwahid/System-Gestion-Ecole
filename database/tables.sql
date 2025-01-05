@@ -8,10 +8,18 @@ CREATE TABLE etudiants (
                            email VARCHAR(100) NOT NULL UNIQUE,
                            promotion VARCHAR(50) NOT NULL
 );
+-- Create table for users
+CREATE TABLE utilisateurs (
+                              id SERIAL PRIMARY KEY,
+                              username VARCHAR(50) NOT NULL UNIQUE,
+                              password VARCHAR(255) NOT NULL,
+                              role VARCHAR(50) NOT NULL -- Example values: 'admin', 'professor', 'student', etc.
+);
 
 -- Create table for professors
 CREATE TABLE professeurs (
                              id SERIAL PRIMARY KEY,
+                             utilisateur_id INT UNIQUE NOT NULL REFERENCES utilisateurs(id) ON DELETE CASCADE, -- Link to utilisateurs table
                              nom VARCHAR(100) NOT NULL,
                              prenom VARCHAR(100) NOT NULL,
                              specialite VARCHAR(100) NOT NULL
@@ -33,10 +41,4 @@ CREATE TABLE inscriptions (
                               date_inscription DATE NOT NULL
 );
 
--- Create table for users
-CREATE TABLE utilisateurs (
-                              id SERIAL PRIMARY KEY,
-                              username VARCHAR(50) NOT NULL UNIQUE,
-                              password VARCHAR(255) NOT NULL,
-                              role VARCHAR(50) NOT NULL
-);
+

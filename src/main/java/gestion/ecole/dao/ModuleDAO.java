@@ -6,8 +6,8 @@ import gestion.ecole.utils.DatabaseConnexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 
 public class ModuleDAO implements CRUD<Module> {
     private final Connection connection;
@@ -119,5 +119,27 @@ public class ModuleDAO implements CRUD<Module> {
         }
         return null; // Return null if no data is found or an error occurs
     }
+    public List<Module> getModulesByProfessorId(int professorId) {
+        List<Module> modules = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM modules WHERE professeur_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, professorId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                modules.add(new Module(
+                        rs.getInt("id"),
+                        rs.getString("nom_module"),
+                        rs.getString("code_module"),
+                        rs.getInt("professeur_id")
+                ));
+            }
+        } catch (Exception e) {
+            System.out.println("Error fetching modules by professor ID: " + e.getMessage());
+        }
+        return modules;
+    }
+
+
 
 }

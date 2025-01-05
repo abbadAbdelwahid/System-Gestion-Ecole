@@ -12,14 +12,25 @@ VALUES
     ('100009', 'Zahidi', 'Nadia', '2000-06-10', 'zahidi.nadia@example.com', '2024'),
     ('100010', 'Fellah', 'Karim', '1999-11-22', 'fellah.karim@example.com', '2023');
 
--- Insert professors
-INSERT INTO professeurs (nom, prenom, specialite)
+-- Insert users
+INSERT INTO utilisateurs (username, password, role)
 VALUES
-    ('Bouaziz', 'Rachid', 'Bases de Données'),
-    ('Mansouri', 'Amina', 'Réseaux Informatiques'),
-    ('Khaldi', 'Salim', 'Développement Logiciel'),
-    ('Zouaoui', 'Layla', 'Sécurité Informatique'),
-    ('Ben Ali', 'Omar', 'Intelligence Artificielle');
+    ('admin', '$2a$10$paON8g8govlrodgTrQBNf.KT8b2zDDrH0goOEYvVnRtkD02yqOEBy', 'admin'),
+    ('sec_amina', '$2a$10$wzEsIS6T6jsjdxDPRYr4K.FGDMHapjiqqhheA//tytceO1IEON5Ya', 'secretary'),
+    ('prof_rachid', '$2a$10$d4tv05Ij.0Os26VM/aGHGue37vefKcr7qFgcDNVwb0o8gR9ce.dLi', 'professor'), -- Linked to Prof Rachid
+    ('prof_amina', '$2a$10$s7ncI/hN1nB1sEqHdvULTO1u8cCIvtRClvlEdpGs97gP4jC545kbW', 'professor'), -- Linked to Prof Amina
+    ('prof_salim', '$2a$10$YTobVrF9x4aXKyFlIP.Nr.LlBheCJLU9861UakkqzncOC4dFAv4p6', 'professor'), -- Linked to Prof Salim
+    ('prof_layla', '$2a$10$iJUZhzDSYJoFOR9FedNX9.0nC47qqtHqvYJksPlSdD2G.KmEO7kGO', 'professor'), -- Linked to Prof Layla
+    ('prof_omar', '$2a$10$20qbQj0Jw7w6eLw8pbU3JOd5kR1lnPH2I130KE976/iEHHD833C0O', 'professor'); -- Linked to Prof Omar
+
+-- Insert professors
+INSERT INTO professeurs ( nom, prenom, specialite,utilisateur_id)
+VALUES
+    ( 'Bouaziz', 'Rachid', 'Bases de Données',3),
+    ( 'Mansouri', 'Amina', 'Réseaux Informatiques',4),
+    ( 'Khaldi', 'Salim', 'Développement Logiciel',5),
+    ( 'Zouaoui', 'Layla', 'Sécurité Informatique',6),
+    ( 'Ben Ali', 'Omar', 'Intelligence Artificielle',7);
 
 -- Insert modules
 INSERT INTO modules (nom_module, code_module, professeur_id)
@@ -78,11 +89,7 @@ VALUES
     (4, 5, '2023-09-04'),
     (5, 5, '2023-09-05');
 
--- Insert users
-INSERT INTO utilisateurs (username, password, role)
-VALUES
-    ('admin', '$2a$10$paON8g8govlrodgTrQBNf.KT8b2zDDrH0goOEYvVnRtkD02yqOEBy', 'admin'),
-    ('prof_rachid', '$2a$10$s7ncI/hN1nB1sEqHdvULTO1u8cCIvtRClvlEdpGs97gP4jC545kbW', 'professor'),
-    ('sec_amina', '$2a$10$wzEsIS6T6jsjdxDPRYr4K.FGDMHapjiqqhheA//tytceO1IEON5Ya', 'secretary'),
-    ('prof_salim', '$2a$10$YTobVrF9x4aXKyFlIP.Nr.LlBheCJLU9861UakkqzncOC4dFAv4p6', 'professor'),
-    ('prof_omar', '$2a$10$d4tv05Ij.0Os26VM/aGHGue37vefKcr7qFgcDNVwb0o8gR9ce.dLi', 'professor');
+
+
+
+

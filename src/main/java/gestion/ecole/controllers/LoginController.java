@@ -50,11 +50,15 @@ public class LoginController {
     private void loadMainView() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/main-layout.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1024, 768); // Set preferred width and height
+            Scene scene = new Scene(fxmlLoader.load(), 1100, 600); // Set preferred width and height
 
             // Pass the role to the MainController
             MainController controller = fxmlLoader.getController();
+            System.out.println(utilisateurService.getLoggedInUserRole());
+            controller.setUserId(utilisateurService.getLoggedInUser().getId());
+            controller.setUserName(utilisateurService.getLoggedInUser().getUsername());
             controller.setUserRole(utilisateurService.getLoggedInUserRole());
+
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
