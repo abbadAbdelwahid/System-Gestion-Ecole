@@ -86,7 +86,7 @@ public class MainController {
             case "secretary":
                 sidebar.getChildren().addAll(
                         createButton("Étudiants", "/gestion/ecole/secretaire/EtudiantsView.fxml"),
-                        createButton("Modules", "/gestion/ecole/secretaire/ModulesView.fxml"),
+                        createButton("Inscriptions", "/gestion/ecole/secretaire/InscriptionsView.fxml"),
                         logoutButton
                 );
                 break;
@@ -113,7 +113,12 @@ public class MainController {
             loadView("/gestion/ecole/admin/DashboardView.fxml");
         }
     }
-
+    @FXML
+    private void handleInscriptionsClick() {
+        if (userRole.equals("secretary")) {
+            loadView("/gestion/ecole/secretaire/InscriptionsView.fxml");
+        }
+    }
     /**
      * Handles the click on the Étudiants button.
      */
@@ -123,12 +128,10 @@ public class MainController {
             case "admin":
                 loadView("/gestion/ecole/admin/EtudiantsView.fxml");
                 break;
-            case "secretaire":
+            case "secretary":
                 loadView("/gestion/ecole/secretaire/EtudiantsView.fxml");
                 break;
-            case "professeur":
-                loadView("/gestion/ecole/professeur/MesEtudiantsView.fxml");
-                break;
+
         }
     }
 
@@ -137,17 +140,12 @@ public class MainController {
      */
     @FXML
     private void handleModulesClick() {
-        switch (userRole) {
-            case "admin":
+
+        if (userRole.equals("admin"))
                 loadView("/gestion/ecole/admin/ModulesView.fxml");
-                break;
-            case "secretaire":
-                loadView("/gestion/ecole/secretaire/ModulesView.fxml");
-                break;
-            case "professeur":
-                loadView("/gestion/ecole/professeur/ModulesView.fxml");
-                break;
-        }
+
+
+
     }
 
     /**

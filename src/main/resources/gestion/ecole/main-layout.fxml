@@ -20,6 +20,7 @@
             <Label style="-fx-font-size: 24px; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-padding: 10 0;" text="Gestion École" />
             <Button fx:id="dashboardButton" onAction="#handleDashboardClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Dashboard" />
             <Button fx:id="etudiantsButton" onAction="#handleEtudiantsClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Étudiants" />
+            <Button fx:id="inscriptionsButton" onAction="#handleInscriptionsClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Inscriptions" />
             <Button fx:id="modulesButton" onAction="#handleModulesClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Modules" />
             <Button fx:id="professeursButton" onAction="#handleProfesseursClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Professeurs" />
             <Button fx:id="logoutButton" onAction="#handleLogoutClick" style="-fx-background-color: #e74c3c; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Déconnexion" />
