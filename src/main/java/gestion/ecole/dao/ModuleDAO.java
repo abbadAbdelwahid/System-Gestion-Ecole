@@ -6,6 +6,7 @@ import gestion.ecole.utils.DatabaseConnexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -136,6 +137,28 @@ public class ModuleDAO implements CRUD<Module> {
             }
         } catch (Exception e) {
             System.out.println("Error fetching modules by professor ID: " + e.getMessage());
+        }
+        return modules;
+    }
+
+// ce que Anass a ajouter
+
+    public List<Module> searchModulesByName(String keyword) {
+        List<Module> modules = new ArrayList<>();
+        String query = "SELECT * FROM modules WHERE nom_module LIKE ?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, "%" + keyword + "%");
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                modules.add(new Module(
+                        rs.getInt("id"),
+                        rs.getString("nom_module"),
+                        rs.getString("code_module"),
+                        rs.getInt("professeur_id")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error searching modules by name: " + e.getMessage());
         }
         return modules;
     }

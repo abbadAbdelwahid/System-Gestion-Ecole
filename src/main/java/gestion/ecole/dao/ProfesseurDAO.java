@@ -6,6 +6,7 @@ import gestion.ecole.utils.DatabaseConnexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,4 +146,34 @@ public class ProfesseurDAO implements CRUD<Professeur> {
         }
         return null;
     }
+
+
+
+    //ce que Anass El ouahabi ajouter :
+
+    public List<Professeur> searchProfesseurs(String keyword) {
+        List<Professeur> professeurs = new ArrayList<>();
+        String query = "SELECT * FROM professeurs WHERE nom LIKE ? OR specialite LIKE ?";
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            pst.setString(1, "%" + keyword + "%");
+            pst.setString(2, "%" + keyword + "%");
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                professeurs.add(new Professeur(
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("specialite"),
+                        rs.getInt("utilisateur_id") // Ajout de utilisateur_id
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error searching professeurs: " + e.getMessage());
+        }
+        return professeurs;
+    }
+
+
+
+
 }

@@ -7,6 +7,7 @@ module gestion.ecole {
     requires java.sql;
     requires org.postgresql.jdbc;
     requires jbcrypt;
+    requires pdfbox.app;
 
     opens gestion.ecole to javafx.fxml;
     opens gestion.ecole.controllers to javafx.fxml;
