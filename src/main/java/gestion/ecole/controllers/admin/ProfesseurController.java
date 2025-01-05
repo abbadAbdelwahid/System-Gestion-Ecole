@@ -1,7 +1,10 @@
 package gestion.ecole.controllers.admin;
 
 
+import gestion.ecole.controllers.MainController;
+import gestion.ecole.controllers.MainControllerAware;
 import gestion.ecole.controllers.UserAwareController;
+import gestion.ecole.controllers.professeur.ModulesController;
 import gestion.ecole.models.Utilisateur;
 import gestion.ecole.services.UtilisateurService;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -9,7 +12,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import gestion.ecole.models.Module;
@@ -21,6 +27,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.cert.PolicyNode;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -28,7 +35,7 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-public class ProfesseurController {
+public class ProfesseurController implements MainControllerAware {
 
     @FXML
     private TextField nomField;
@@ -41,6 +48,7 @@ public class ProfesseurController {
 
     @FXML
     private TextField utilisateurIdField;
+
 
 
     @FXML
@@ -70,6 +78,8 @@ public class ProfesseurController {
     @FXML
     private TextField searchField;
 
+
+    private MainController mainController;
 
 
 
@@ -206,6 +216,33 @@ public class ProfesseurController {
     }
 
 
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+    @FXML
+    private void handleRowClick(MouseEvent event) throws IOException {
+        if (event.getClickCount() == 2) { // Double-click
+            Professeur selectedProfesseur = professeurTable.getSelectionModel().getSelectedItem();
+            if (selectedProfesseur != null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/professeur/ModulesView.fxml"));
+                Pane newView = loader.load();
+
+                // Dynamically pass userId or other data if needed
+                Object controller = loader.getController();
+                // Optionally pass data to the controller
+                if (controller instanceof ModulesController) {
+                    ((ModulesController) controller).setProfessorId(selectedProfesseur.getId());
+                }
+
+                // Use the main controller to update the content pane
+                if (mainController != null) {
+                    mainController.setContentPane(newView);
+                }
+            }
+        }
+    }
 
     @FXML
     private void searchProfesseurs() {

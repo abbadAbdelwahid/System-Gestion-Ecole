@@ -3,6 +3,7 @@ package gestion.ecole.controllers;
 import gestion.ecole.services.UtilisateurService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -159,6 +160,10 @@ public class MainController {
         }
     }
 
+    public void setContentPane(Node node) {
+        contentPane.getChildren().clear();
+        contentPane.getChildren().add(node);
+    }
 
     /**
      * Creates a button for the sidebar with an action to load a specific view.
@@ -199,6 +204,9 @@ public class MainController {
                 System.out.println("hi "+userId);
                 ((UserAwareController) controller).setUserId(userId);
             }
+            if (controller instanceof MainControllerAware)
+                ((MainControllerAware) controller).setMainController(this);;
+
 
             // Replace content pane with the new view
             contentPane.getChildren().clear();
