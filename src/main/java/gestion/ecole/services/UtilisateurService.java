@@ -24,7 +24,7 @@ public class UtilisateurService {
     }
 
     // Add a new user
-    public boolean addUser(String username, String plainPassword, String role) {
+    public Utilisateur addUser(String username, String plainPassword, String role) {
         String hashedPassword = hashPassword(plainPassword);
         Utilisateur utilisateur = new Utilisateur(0, username, hashedPassword, role);
         return utilisateurDAO.insert(utilisateur);

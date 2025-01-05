@@ -6,32 +6,55 @@ import gestion.ecole.utils.DatabaseConnexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class UtilisateurDAO implements CRUD<Utilisateur> {
+public class UtilisateurDAO  {
     private final Connection connection;
 
     public UtilisateurDAO() {
         this.connection = DatabaseConnexion.getInstance().getConnection();
     }
 
-    @Override
-    public boolean insert(Utilisateur utilisateur) {
+
+    public Utilisateur insert(Utilisateur utilisateur) {
         try {
             String query = "INSERT INTO utilisateurs (username, password, role) VALUES (?, ?, ?)";
-            PreparedStatement ps = connection.prepareStatement(query);
+            PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+            // Set the parameters for the query
             ps.setString(1, utilisateur.getUsername());
             ps.setString(2, utilisateur.getPassword()); // Assume password is already hashed
             ps.setString(3, utilisateur.getRole());
-            return ps.executeUpdate() > 0;
+
+            // Execute the query
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Inserting utilisateur failed, no rows affected.");
+            }
+
+            // Retrieve the generated keys
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    // Set the generated ID to the utilisateur object
+                    utilisateur.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Inserting utilisateur failed, no ID obtained.");
+                }
+            }
         } catch (Exception e) {
             System.out.println("Error inserting Utilisateur: " + e.getMessage());
-            return false;
+            return null; // Return null in case of failure
         }
+
+        return utilisateur; // Return the inserted utilisateur with its ID
     }
 
-    @Override
+
     public Utilisateur get(int id) {
         try {
             String query = "SELECT * FROM utilisateurs WHERE id = ?";
@@ -52,7 +75,7 @@ public class UtilisateurDAO implements CRUD<Utilisateur> {
         return null;
     }
 
-    @Override
+
     public List<Utilisateur> getAll() {
         List<Utilisateur> utilisateurs = new ArrayList<>();
         try {
@@ -73,7 +96,7 @@ public class UtilisateurDAO implements CRUD<Utilisateur> {
         return utilisateurs;
     }
 
-    @Override
+
     public boolean update(Utilisateur utilisateur) {
         try {
             String query = "UPDATE utilisateurs SET username = ?, password = ?, role = ? WHERE id = ?";
@@ -89,7 +112,7 @@ public class UtilisateurDAO implements CRUD<Utilisateur> {
         }
     }
 
-    @Override
+
     public boolean delete(int id) {
         try {
             String query = "DELETE FROM utilisateurs WHERE id = ?";
