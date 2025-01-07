@@ -170,7 +170,7 @@ public class MainController {
      */
     private Button createButton(String text, String fxmlPath) {
         Button button = new Button(text);
-        button.setStyle("-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+//       button.setStyle("-fx-background-color: #4a6983; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
         button.setOnAction(event -> {
             loadView(fxmlPath);
             highlightButton(button); // Highlight the clicked button
@@ -183,11 +183,14 @@ public class MainController {
      */
     private void highlightButton(Button button) {
         sidebar.getChildren().forEach(node -> {
-            if (node instanceof Button) {
-                node.setStyle("-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+            if(node == logoutButton)
+                node.setStyle("-fx-background-color: #8c220a; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+
+            else if (node instanceof Button) {
+                node.setStyle("-fx-background-color: #4a6983; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
             }
         });
-        button.setStyle("-fx-background-color: #2c3e50; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+        button.setStyle("-fx-background-color: #395467; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
     }
 
     /**

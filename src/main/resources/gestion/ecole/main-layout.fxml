@@ -7,26 +7,30 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.effect.BoxBlur?>
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gestion.ecole.controllers.MainController">
     <!-- Header -->
-    <HBox fx:id="header" spacing="10" style="-fx-background-color: #2c3e50; -fx-padding: 10;" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="CENTER">
-        <Label fx:id="userLabel" style="-fx-font-size: 18px; -fx-text-fill: #ecf0f1; -fx-font-weight: bold;" text="Bienvenue, [Nom d'utilisateur]" />
+    <HBox fx:id="header" spacing="10" style="-fx-background-color: rgb(30,45,55); -fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0, 0, 4);" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="CENTER">
+        <Label fx:id="userLabel" style="-fx-font-size: 18px; -fx-text-fill: #ffffff; -fx-font-weight: bold;" text="Bienvenue, [Nom d'utilisateur]" />
     </HBox>
 
     <!-- Main Layout -->
-    <HBox spacing="0" AnchorPane.topAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" style="-fx-background-color: #f8f9fa;">
+    <HBox spacing="0" AnchorPane.topAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" style="-fx-background-color: #f5f6fa;">
         <!-- Sidebar -->
-        <VBox fx:id="sidebar" alignment="TOP_LEFT" spacing="20" style="-fx-min-width: 250; -fx-background-color: #2c3e50; -fx-padding: 20;">
-            <Label style="-fx-font-size: 24px; -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-padding: 10 0;" text="Gestion École" />
-            <Button fx:id="dashboardButton" onAction="#handleDashboardClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Dashboard" />
-            <Button fx:id="etudiantsButton" onAction="#handleEtudiantsClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Étudiants" />
-            <Button fx:id="inscriptionsButton" onAction="#handleInscriptionsClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Inscriptions" />
-            <Button fx:id="modulesButton" onAction="#handleModulesClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Modules" />
-            <Button fx:id="professeursButton" onAction="#handleProfesseursClick" style="-fx-background-color: #34495e; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Professeurs" />
-            <Button fx:id="logoutButton" onAction="#handleLogoutClick" style="-fx-background-color: #e74c3c; -fx-text-fill: #ffffff; -fx-pref-width: 200;" text="Déconnexion" />
+        <VBox fx:id="sidebar" spacing="15" style="-fx-min-width: 250; -fx-padding: 20;
+            -fx-background-color: linear-gradient(to bottom, rgb(30,45,55), rgb(44,62,80), rgb(60,86,106));
+            -fx-background-insets: 0;
+
+            -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);">
+            <!-- Apply Blur Effect -->
+            <effect>
+                <BoxBlur width="10" height="10" iterations="3" />
+            </effect>            <Label style="-fx-font-size: 24px; -fx-text-fill: #ffffff; -fx-font-weight: bold;" text="Gestion École" />
+
+            <Button fx:id="logoutButton" onAction="#handleLogoutClick"  text="Déconnexion" />
         </VBox>
 
         <!-- Main Content -->
-        <Pane fx:id="contentPane" style="-fx-padding: 20; -fx-background-color: #f8f9fa; -fx-pref-width: 100%; -fx-pref-height: 100%;" />
+        <Pane fx:id="contentPane" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 5); -fx-border-radius: 10;" />
     </HBox>
 </AnchorPane>
