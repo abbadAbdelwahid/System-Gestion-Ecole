@@ -76,7 +76,8 @@ public class MainController {
             case "admin":
                 sidebar.getChildren().addAll(
                         createButton("Dashboard", "/gestion/ecole/admin/DashboardView.fxml"),
-                        createButton("Étudiants", "/gestion/ecole/admin/EtudiantsView.fxml"),
+                        createButton("Étudiants", "/gestion/ecole/secretaire/EtudiantsView.fxml"),
+                        createButton("Inscriptions", "/gestion/ecole/secretaire/InscriptionsView.fxml"),
                         createButton("Modules", "/gestion/ecole/admin/ModulesView.fxml"),
                         createButton("Professeurs", "/gestion/ecole/admin/ProfesseursView.fxml"),
                         logoutButton
@@ -115,9 +116,10 @@ public class MainController {
     }
     @FXML
     private void handleInscriptionsClick() {
-        if (userRole.equals("secretary")) {
+        if (userRole.equals("secretary") || userRole.equals("admin")) {
             loadView("/gestion/ecole/secretaire/InscriptionsView.fxml");
         }
+
     }
     /**
      * Handles the click on the Étudiants button.

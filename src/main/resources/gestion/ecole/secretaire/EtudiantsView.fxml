@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="gestion.ecole.controllers.secretaire.EtudiantsController">
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gestion.ecole.controllers.secretaire.EtudiantsController">
     <center>
-        <VBox spacing="10">
+        <VBox prefHeight="440.0" prefWidth="846.0" spacing="10">
             <padding>
-                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
 
             <!-- Barre de recherche -->
@@ -38,7 +38,7 @@
             </TableView>
 
             <!-- Boutons d'action -->
-            <HBox spacing="10" alignment="CENTER">
+            <HBox alignment="CENTER" spacing="10">
                 <Button fx:id="btnAjouter" onAction="#handleAjouterEtudiant" text="Ajouter" />
                 <Button fx:id="btnModifier" onAction="#handleModifierEtudiant" text="Modifier" />
                 <Button fx:id="btnSupprimer" onAction="#handleSupprimerEtudiant" text="Supprimer" />

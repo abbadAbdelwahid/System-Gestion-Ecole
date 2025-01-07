@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1"
-            fx:controller="gestion.ecole.controllers.secretaire.EtudiantFormController">
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gestion.ecole.controllers.secretaire.EtudiantFormController">
     <children>
-        <VBox spacing="10">
+        <VBox prefHeight="514.0" prefWidth="356.0" spacing="10">
             <padding>
-                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
-            <Label text="Formulaire Étudiant" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Formulaire Étudiant" />
             <Label text="Matricule *" />
             <TextField fx:id="matriculeField" />
             <Label text="Nom *" />
@@ -30,9 +29,9 @@
             <Label text="Promotion" />
             <TextField fx:id="promotionField" />
             <Label fx:id="lblMessage" />
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="Valider" onAction="#validerEtudiant" />
-                <Button text="Annuler" onAction="#annulerAction" />
+            <HBox alignment="CENTER" spacing="10">
+                <Button onAction="#validerEtudiant" text="Valider" />
+                <Button onAction="#annulerAction" text="Annuler" />
             </HBox>
         </VBox>
     </children>

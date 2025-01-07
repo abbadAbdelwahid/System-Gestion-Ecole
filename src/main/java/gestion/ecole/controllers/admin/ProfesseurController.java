@@ -290,6 +290,7 @@ public class ProfesseurController implements MainControllerAware {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Enregistrer la liste des professeurs");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv"));
+        fileChooser.setInitialFileName("Liste_Professeurs"  + ".pdf");
         File file = fileChooser.showSaveDialog(null);
 
         if (file != null) {
@@ -316,6 +317,8 @@ public class ProfesseurController implements MainControllerAware {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Enregistrer la liste des professeurs");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+        fileChooser.setInitialFileName("Liste_Professeurs"  + ".pdf");
+
         File file = fileChooser.showSaveDialog(null);
 
         if (file != null) {

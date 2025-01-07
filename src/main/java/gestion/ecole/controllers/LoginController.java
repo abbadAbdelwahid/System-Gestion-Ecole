@@ -63,7 +63,7 @@ public class LoginController {
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Gestion École");
-            stage.setResizable(true); // Allow resizing if needed
+            stage.setResizable(false); // Allow resizing if needed
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
