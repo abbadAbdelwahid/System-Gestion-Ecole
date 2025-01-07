@@ -203,7 +203,7 @@ public class MainController {
                 ((UserAwareController) controller).setUserId(userId);
             }
             if (controller instanceof MainControllerAware)
-                ((MainControllerAware) controller).setMainController(this);;
+                ((MainControllerAware) controller).setMainController(this);
 
 
             // Replace content pane with the new view

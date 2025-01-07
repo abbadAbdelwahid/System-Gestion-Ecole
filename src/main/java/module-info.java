@@ -7,11 +7,14 @@ module gestion.ecole {
     requires java.sql;
     requires org.postgresql.jdbc;
     requires jbcrypt;
-    requires pdfbox.app;
+    requires org.apache.pdfbox;
 
+    // Ouverture pour injection FXML
     opens gestion.ecole to javafx.fxml;
     opens gestion.ecole.controllers to javafx.fxml;
+    opens gestion.ecole.controllers.secretaire to javafx.fxml;
 
+    // Exportation des packages pour d'autres modules
     exports gestion.ecole;
     exports gestion.ecole.controllers;
     exports gestion.ecole.models;
@@ -19,7 +22,4 @@ module gestion.ecole {
     exports gestion.ecole.controllers.admin;
     exports gestion.ecole.controllers.professeur;
     exports gestion.ecole.controllers.secretaire;
-    opens gestion.ecole.controllers.admin to javafx.fxml;
-    opens gestion.ecole.controllers.professeur to javafx.fxml;
-    opens gestion.ecole.controllers.secretaire to javafx.fxml;
 }

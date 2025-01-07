@@ -1,6 +1,7 @@
 package gestion.ecole.models;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Etudiant {
     private int id;
@@ -11,7 +12,6 @@ public class Etudiant {
     private String email;
     private String promotion;
 
-
     public Etudiant(int id, String matricule, String nom, String prenom, LocalDate dateNaissance, String email, String promotion) {
         this.id = id;
         this.matricule = matricule;
@@ -21,7 +21,6 @@ public class Etudiant {
         this.email = email;
         this.promotion = promotion;
     }
-
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
@@ -37,4 +36,22 @@ public class Etudiant {
     public void setEmail(String email) { this.email = email; }
     public String getPromotion() { return promotion; }
     public void setPromotion(String promotion) { this.promotion = promotion; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Etudiant etudiant = (Etudiant) o;
+        return Objects.equals(matricule, etudiant.matricule);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(matricule);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s (Matricule: %s, Email: %s)", nom, prenom, matricule, email);
+    }
 }
