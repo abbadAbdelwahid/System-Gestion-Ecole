@@ -91,12 +91,11 @@ public class ProfesseurController implements MainControllerAware {
 
     @FXML
     public void initialize() {
-        // Utilisation de SimpleIntegerProperty pour la colonne ID
+
         idColumn.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(cellData.getValue().getId()).asObject()
         );
 
-        // Utilisation de SimpleStringProperty pour les colonnes de type String
         nomColumn.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getNom())
         );
@@ -107,7 +106,6 @@ public class ProfesseurController implements MainControllerAware {
                 new SimpleStringProperty(cellData.getValue().getSpecialite())
         );
 
-        // Charger les données dans la TableView
         loadProfesseurs();
     }
 
@@ -128,17 +126,14 @@ public class ProfesseurController implements MainControllerAware {
 
         if (!nom.isEmpty() && !prenom.isEmpty() && !specialite.isEmpty()) {
             try {
-                // Générer le username et le password
                 String username = nom + prenom;
-                String password = "password"; // Mot de passe par défaut
+                String password = "password";
                 String role = "professor";
 
-                // Créer un utilisateur via UtilisateurService
                 UtilisateurService utilisateurService = new UtilisateurService();
                 Utilisateur utilisateur = utilisateurService.addUser(username, password, role);
 
                 if (utilisateur != null) {
-                    // Insérer le professeur avec l'ID utilisateur
                     int utilisateurId = utilisateur.getId();
                     Professeur professeur = new Professeur(0, nom, prenom, specialite, utilisateurId);
                     if (professeurDAO.insert(professeur)) {
@@ -165,12 +160,11 @@ public class ProfesseurController implements MainControllerAware {
     private void updateProfesseur() {
         Professeur selected = professeurTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Mise à jour des champs du professeur
+
             selected.setNom(nomField.getText());
             selected.setPrenom(prenomField.getText());
             selected.setSpecialite(specialiteField.getText());
 
-            // Appel à la méthode update du DAO
             if (professeurDAO.update(selected)) {
                 loadProfesseurs();
                 clearFields();
@@ -188,7 +182,7 @@ public class ProfesseurController implements MainControllerAware {
     private void deleteProfesseur() {
         Professeur selected = professeurTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Appel à la méthode delete du DAO
+
             if (professeurDAO.delete(selected.getId())) {
                 loadProfesseurs();
                 clearFields();
@@ -209,34 +203,39 @@ public class ProfesseurController implements MainControllerAware {
     }
 
     private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(content);
-        alert.showAndWait();
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle(title);
+
+        Label contentLabel = new Label(content);
+        contentLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #34495e;");
+
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType);
+
+        dialog.getDialogPane().setContent(contentLabel);
+        dialog.getDialogPane().setStyle("-fx-background-color: #ffffff; -fx-border-color: #dcdcdc; -fx-border-width: 1;");
+        dialog.showAndWait();
     }
 
 
     @Override
     public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+         this.mainController = mainController;
     }
 
     @FXML
     private void handleRowClick(MouseEvent event) throws IOException {
-        if (event.getClickCount() == 2) { // Double-click
+        if (event.getClickCount() == 2) {
             Professeur selectedProfesseur = professeurTable.getSelectionModel().getSelectedItem();
             if (selectedProfesseur != null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/professeur/ModulesView.fxml"));
                 Pane newView = loader.load();
 
-                // Dynamically pass userId or other data if needed
                 Object controller = loader.getController();
-                // Optionally pass data to the controller
                 if (controller instanceof ModulesController) {
                     ((ModulesController) controller).setProfessorId(selectedProfesseur.getId());
                 }
 
-                // Use the main controller to update the content pane
                 if (mainController != null) {
                     mainController.setContentPane(newView);
                 }
@@ -323,25 +322,20 @@ public class ProfesseurController implements MainControllerAware {
 
         if (file != null) {
             try (PDDocument document = new PDDocument()) {
-                // Création d'une page PDF
                 PDPage page = new PDPage();
                 document.addPage(page);
 
-                // Initialisation du flux de contenu
                 PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-                // Configuration des styles
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
                 contentStream.beginText();
                 contentStream.setLeading(15f);
                 contentStream.newLineAtOffset(50, 750);
 
-                // En-tête
                 contentStream.showText("Liste des Professeurs");
                 contentStream.newLine();
                 contentStream.newLine();
 
-                // Ajout des colonnes
                 contentStream.setFont(PDType1Font.HELVETICA, 12);
                 contentStream.showText("ID      Nom           Prénom       Spécialité    Utilisateur ID");
                 contentStream.newLine();
@@ -361,7 +355,6 @@ public class ProfesseurController implements MainControllerAware {
                 contentStream.endText();
                 contentStream.close();
 
-                // Enregistrement du document
                 document.save(file);
                 showAlert("Succès", "La liste des professeurs a été exportée en PDF avec succès.");
             } catch (IOException e) {

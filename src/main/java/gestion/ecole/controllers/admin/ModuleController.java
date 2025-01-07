@@ -79,12 +79,10 @@ public class ModuleController {
     private void updateModule() {
         Module selected = moduleTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Mise à jour des champs du module
             selected.setNomModule(nomField.getText());
             selected.setCodeModule(codeField.getText());
-            selected.setProfesseurId(Integer.parseInt(professeurIdField.getText())); // Inclure professeur_id
+            selected.setProfesseurId(Integer.parseInt(professeurIdField.getText()));
 
-            // Appel à la méthode update du DAO
             if (moduleDAO.update(selected)) {
                 loadModules();
                 clearFields();
@@ -102,7 +100,6 @@ public class ModuleController {
     private void deleteModule() {
         Module selected = moduleTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Appel à la méthode delete du DAO
             if (moduleDAO.delete(selected.getId())) {
                 loadModules();
                 clearFields();
@@ -130,15 +127,23 @@ public class ModuleController {
             moduleList.setAll(searchResults);
             moduleTable.setItems(moduleList);
         } else {
-            loadModules(); // Recharge tous les modules si le champ de recherche est vide
+            loadModules();
         }
     }
 
     private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(content);
-        alert.showAndWait();
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle(title);
+
+        Label contentLabel = new Label(content);
+        contentLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #34495e;");
+
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType);
+
+        dialog.getDialogPane().setContent(contentLabel);
+        dialog.getDialogPane().setStyle("-fx-background-color: #ffffff; -fx-border-color: #dcdcdc; -fx-border-width: 1;");
+        dialog.showAndWait();
     }
 
 
@@ -231,11 +236,10 @@ public class ModuleController {
         }
 
         try {
-            ProfesseurDAO professeurDAO = new ProfesseurDAO(); // Utilisation de ProfesseurDAO
-            Professeur professeur = professeurDAO.get(module.getProfesseurId()); // Appel à la méthode get()
+            ProfesseurDAO professeurDAO = new ProfesseurDAO();
+            Professeur professeur = professeurDAO.get(module.getProfesseurId());
 
             if (professeur != null) {
-                // Fenêtre de détails
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Détails du professeur");
                 alert.setHeaderText("Informations sur le professeur");
@@ -243,7 +247,7 @@ public class ModuleController {
                         "Nom : " + professeur.getNom() + "\n" +
                                 "Prénom : " + professeur.getPrenom() + "\n" +
                                 "Spécialité : " + professeur.getSpecialite() + "\n" +
-                                "Utilisateur ID : " + professeur.getUtilisateur_id() // Ajout de utilisateur_id
+                                "Utilisateur ID : " + professeur.getUtilisateur_id()
                 );
                 alert.showAndWait();
             } else {
