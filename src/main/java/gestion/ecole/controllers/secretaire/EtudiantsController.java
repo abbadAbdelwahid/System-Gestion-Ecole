@@ -11,10 +11,15 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import gestion.ecole.services.SecretaireExportService;  // Ajoutez cet import
+import javafx.stage.FileChooser;
+import java.io.File;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-public class EtudiantsController {
+public class EtudiantsController  {
 
     // TableView et ses colonnes
     @FXML
@@ -38,9 +43,13 @@ public class EtudiantsController {
 
     private final EtudiantService etudiantService = new EtudiantService();
     private ObservableList<Etudiant> listeEtudiants;
+    private static TableView<Etudiant> staticTableEtudiants;
 
     @FXML
     public void initialize() {
+        // Initialiser la référence statique
+        staticTableEtudiants = tableEtudiants;
+
         // Initialisation des colonnes de la TableView
         columnNom.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNom()));
         columnPrenom.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPrenom()));
@@ -49,13 +58,44 @@ public class EtudiantsController {
         columnPromotion.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPromotion()));
         columnDateNaissance.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getDateNaissance()));
 
-        loadStudentsData();  // Chargement des données dans la TableView
+        // Initialiser la liste et charger les données
+        listeEtudiants = FXCollections.observableArrayList();
+        loadStudentsData();
     }
 
     // Méthode pour charger les étudiants dans la TableView
-    private void loadStudentsData() {
-        listeEtudiants = FXCollections.observableArrayList(etudiantService.getAll());
+    public static void loadStudentsData() {
+        try {
+            EtudiantService service = new EtudiantService();
+            ObservableList<Etudiant> newList = FXCollections.observableArrayList(service.getAll());
+
+            if (staticTableEtudiants != null) {
+                // Utiliser Platform.runLater pour assurer la mise à jour dans le thread UI
+                javafx.application.Platform.runLater(() -> {
+                    staticTableEtudiants.setItems(newList);
+                    staticTableEtudiants.refresh();
+                });
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement des étudiants : " + e.getMessage());
+        }
+    }
+
+    // Méthode pour la recherche
+    @FXML
+    private void handleRechercheEtudiant() {
+        String keyword = searchField.getText().toLowerCase();
+        List<Etudiant> filteredList = etudiantService.search(keyword);
+        listeEtudiants = FXCollections.observableArrayList(filteredList);
         tableEtudiants.setItems(listeEtudiants);
+        lblMessage.setText(filteredList.isEmpty() ? "Aucun étudiant trouvé." : filteredList.size() + " étudiant(s) trouvé(s).");
+    }
+
+    // Méthode pour rafraîchir
+    @FXML
+    private void handleRefreshTable() {
+        loadStudentsData();
+        lblMessage.setText("Table mise à jour.");
     }
 
     @FXML
@@ -168,17 +208,63 @@ public class EtudiantsController {
         stage.close();
     }
 
+
+    // Ajoutez cette propriété
+    private final SecretaireExportService exportService = new SecretaireExportService();
+
     @FXML
-    private void handleRechercheEtudiant() {
-        String keyword = searchField.getText().toLowerCase();
-        List<Etudiant> filteredList = etudiantService.search(keyword);
-        listeEtudiants.setAll(filteredList);
-        lblMessage.setText(filteredList.isEmpty() ? "Aucun étudiant trouvé." : filteredList.size() + " étudiant(s) trouvé(s).");
+    private void handleExportPDF() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer le PDF");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Fichiers PDF (*.pdf)", "*.pdf")
+            );
+
+            File file = fileChooser.showSaveDialog(tableEtudiants.getScene().getWindow());
+
+            if (file != null) {
+                exportService.generatePDF(listeEtudiants, file.getAbsolutePath());
+                lblMessage.setText("Le PDF a été généré avec succès !");
+            }
+        } catch (Exception e) {
+            lblMessage.setText("Erreur lors de la génération du PDF : " + e.getMessage());
+        }
     }
 
     @FXML
-    private void handleRefreshTable() {
-        loadStudentsData();
-        lblMessage.setText("Table mise à jour.");
+    private void handleExportCSV() {
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer en CSV");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Fichiers CSV (*.csv)", "*.csv")
+            );
+
+            // Utilisez le dossier Documents par défaut
+            String userHome = System.getProperty("user.home");
+            fileChooser.setInitialDirectory(new File(userHome + "/Documents"));
+
+            File file = fileChooser.showSaveDialog(tableEtudiants.getScene().getWindow());
+
+            if (file != null) {
+                // Vérifiez si le fichier existe déjà
+                if (file.exists()) {
+                    // Essayez de supprimer le fichier existant
+                    if (!file.delete()) {
+                        throw new IOException("Impossible de remplacer le fichier existant. Il est peut-être utilisé par un autre programme.");
+                    }
+                }
+
+                exportService.generateCSV(listeEtudiants, file.getAbsolutePath());
+                lblMessage.setText("Le fichier CSV a été généré avec succès !");
+            }
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Erreur lors de la génération du CSV : " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 }

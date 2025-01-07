@@ -8,11 +8,15 @@ module gestion.ecole {
     requires org.postgresql.jdbc;
     requires jbcrypt;
     requires org.apache.pdfbox;
+    requires org.apache.poi.poi;        // Ajoutez cette ligne
+    requires org.apache.poi.ooxml;      // Ajoutez cette ligne
+    requires java.desktop;              // Ajoutez cette ligne
 
     // Ouverture pour injection FXML
     opens gestion.ecole to javafx.fxml;
     opens gestion.ecole.controllers to javafx.fxml;
     opens gestion.ecole.controllers.secretaire to javafx.fxml;
+
 
     // Exportation des packages pour d'autres modules
     exports gestion.ecole;
@@ -22,4 +26,5 @@ module gestion.ecole {
     exports gestion.ecole.controllers.admin;
     exports gestion.ecole.controllers.professeur;
     exports gestion.ecole.controllers.secretaire;
+    exports gestion.ecole.services;     // Ajoutez cette ligne
 }

@@ -53,12 +53,18 @@ public class EtudiantFormController {
                 );
 
                 if (etudiantToEdit != null) {
-                    etudiantService.update(etudiant);
+                    if (etudiantService.update(etudiant)) {
+                        // Appeler directement le rechargement des données
+                        EtudiantsController.loadStudentsData();
+                        closeWindow();
+                    }
                 } else {
-                    etudiantService.addStudent(etudiant);
+                    if (etudiantService.addStudent(etudiant)) {
+                        // Appeler directement le rechargement des données
+                        EtudiantsController.loadStudentsData();
+                        closeWindow();
+                    }
                 }
-
-                closeWindow();
             }
         } catch (Exception e) {
             lblMessage.setText("Erreur: " + e.getMessage());
@@ -85,4 +91,5 @@ public class EtudiantFormController {
         Stage stage = (Stage) matriculeField.getScene().getWindow();
         stage.close();
     }
+
 }
