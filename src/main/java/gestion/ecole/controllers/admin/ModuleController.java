@@ -198,7 +198,7 @@ public class ModuleController {
             @Override
             public TableCell<Module, Void> call(final TableColumn<Module, Void> param) {
                 return new TableCell<>() {
-                    private final Button btn = new Button("Détails");
+                    private final Button btn = new Button("Détails du professeur");
 
                     {
                         btn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;");

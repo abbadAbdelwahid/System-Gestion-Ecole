@@ -47,8 +47,8 @@
                 <Button fx:id="updateButton" onAction="#updateProfesseur" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Modifier" />
                 <Button fx:id="deleteButton" onAction="#deleteProfesseur" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Supprimer" />
                 <Button fx:id="assignToModuleButton" onAction="#assignProfesseurToModule" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Affecter au module" />
-                <Button fx:id="exportButton" onAction="#exportProfesseursToCSV" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Exporter CSV" />
-                <Button fx:id="exportPdfButton" onAction="#exportProfesseursToPDF" style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Exporter PDF" />
+                <Button fx:id="exportButton" onAction="#exportProfesseursToCSV" style="-fx-background-color: #000000; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Exporter CSV" />
+                <Button fx:id="exportPdfButton" onAction="#exportProfesseursToPDF" style="-fx-background-color: #000000; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Exporter PDF" />
             </HBox>
         </VBox>
     </center>
