@@ -13,6 +13,11 @@ public class EtudiantService {
         this.etudiantDAO = new EtudiantDAO();
     }
 
+    public Etudiant get(int id) {
+        return etudiantDAO.get(id);
+    }
+
+
     // Méthode pour récupérer tous les étudiants
     public List<Etudiant> getAll() {
         return etudiantDAO.getAll();

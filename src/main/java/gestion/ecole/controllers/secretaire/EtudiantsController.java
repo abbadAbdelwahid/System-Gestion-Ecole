@@ -2,6 +2,7 @@ package gestion.ecole.controllers.secretaire;
 
 import gestion.ecole.models.Etudiant;
 import gestion.ecole.services.EtudiantService;
+import gestion.ecole.services.ExcelExportService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -212,9 +213,19 @@ public class EtudiantsController  {
     // Ajoutez cette propriété
     private final SecretaireExportService exportService = new SecretaireExportService();
 
+    private void refreshListeEtudiants() {
+        // Met à jour la liste globale
+        listeEtudiants = FXCollections.observableArrayList(etudiantService.getAll());
+        tableEtudiants.setItems(listeEtudiants);
+        tableEtudiants.refresh();
+    }
+
     @FXML
     private void handleExportPDF() {
         try {
+            // Rafraîchir d'abord la liste
+            refreshListeEtudiants();
+
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Enregistrer le PDF");
             fileChooser.getExtensionFilters().add(
@@ -235,10 +246,13 @@ public class EtudiantsController  {
     @FXML
     private void handleExportCSV() {
         try {
+            // Rafraîchir d'abord la liste
+            refreshListeEtudiants();
+
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Enregistrer en CSV");
+            fileChooser.setTitle("Enregistrer en Excel");
             fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("Fichiers CSV (*.csv)", "*.csv")
+                    new FileChooser.ExtensionFilter("Fichiers Excel (*.xlsx)", "*.xlsx")
             );
 
             // Utilisez le dossier Documents par défaut
@@ -248,22 +262,16 @@ public class EtudiantsController  {
             File file = fileChooser.showSaveDialog(tableEtudiants.getScene().getWindow());
 
             if (file != null) {
-                // Vérifiez si le fichier existe déjà
-                if (file.exists()) {
-                    // Essayez de supprimer le fichier existant
-                    if (!file.delete()) {
-                        throw new IOException("Impossible de remplacer le fichier existant. Il est peut-être utilisé par un autre programme.");
-                    }
-                }
-
-                exportService.generateCSV(listeEtudiants, file.getAbsolutePath());
-                lblMessage.setText("Le fichier CSV a été généré avec succès !");
+                // Créer une instance du nouveau service Excel
+                ExcelExportService excelService = new ExcelExportService();
+                excelService.generateExcel(listeEtudiants, file.getAbsolutePath());
+                lblMessage.setText("Le fichier Excel a été généré avec succès !");
             }
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setHeaderText(null);
-            alert.setContentText("Erreur lors de la génération du CSV : " + e.getMessage());
+            alert.setContentText("Erreur lors de la génération du fichier Excel : " + e.getMessage());
             alert.showAndWait();
         }
     }
