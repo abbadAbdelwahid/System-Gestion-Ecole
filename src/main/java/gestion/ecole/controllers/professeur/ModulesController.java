@@ -136,7 +136,7 @@ public class ModulesController implements UserAwareController, BundleAware {
     private void searchStudents() {
         String searchText = searchField.getText().trim();
         if (searchText.isEmpty() || selectedModuleId == 0) {
-            return; // No search term or no module selected
+            return;
         }
 
         List<Etudiant> students = etudiantService.searchInStudentsByModule(selectedModuleId, searchText);
@@ -148,7 +148,7 @@ public class ModulesController implements UserAwareController, BundleAware {
     private void resetStudentSearch() {
         searchField.clear();
         if (selectedModuleId != 0) {
-            loadStudents(selectedModuleId); // Reload students for the selected module
+            loadStudents(selectedModuleId);
         }
     }
 

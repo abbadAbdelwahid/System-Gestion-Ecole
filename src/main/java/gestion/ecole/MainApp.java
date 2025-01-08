@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Set default locale to French
+
 
         ResourceBundle bundle = ResourceBundle.getBundle("texts.messages", Locale.FRENCH);
 
@@ -20,7 +20,7 @@ public class MainApp extends Application {
 
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/login.fxml"));
-//        fxmlLoader.setResources(bundle); // Pass the resource bundle
+
 
         Scene scene = new Scene(fxmlLoader.load());
 

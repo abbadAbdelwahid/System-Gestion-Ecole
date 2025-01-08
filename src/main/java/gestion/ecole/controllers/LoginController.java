@@ -61,9 +61,8 @@ public class LoginController {
 
             Scene scene = new Scene(fxmlLoader.load(), 1100, 600); // Set preferred width and height
 
-            // Pass the logged-in user details to the MainController
             MainController controller = fxmlLoader.getController();
-//            controller.setResourceBundle(resourceBundle);
+
             controller.setUserId(utilisateurService.getLoggedInUser().getId());
             controller.setUserName(utilisateurService.getLoggedInUser().getUsername());
             controller.setUserRole(utilisateurService.getLoggedInUserRole());

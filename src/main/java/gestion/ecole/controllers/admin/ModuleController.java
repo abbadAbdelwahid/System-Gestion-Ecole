@@ -187,6 +187,7 @@ public class ModuleController implements BundleAware {
 
                 ProfesseurController professeurController = loader.getController();
                 professeurController.setSelectedModule(module);
+                professeurController.setResourceBundle(bundle);
 
                 Stage stage = new Stage();
                 stage.setTitle(bundle.getString("professor.select.title"));

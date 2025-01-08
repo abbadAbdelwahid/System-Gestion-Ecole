@@ -57,8 +57,8 @@ public class DashboardController implements BundleAware{
 
     private void updateTexts() {
         // Set translated static texts
-        mostPopularModuleLabel.setText(bundle.getString("dashboard.mostPopularModule"));
-        mostActiveProfessorLabel.setText(bundle.getString("dashboard.mostActiveProfessor"));
+        mostPopularModuleLabel.setText(dashboardService.getMostPopularModule());
+        mostActiveProfessorLabel.setText(dashboardService.getMostActiveProfessor());
     }
 
     private void loadDashboardData() {
