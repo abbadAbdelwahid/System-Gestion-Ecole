@@ -1,6 +1,6 @@
 package gestion.ecole.controllers.admin;
 
-
+import gestion.ecole.controllers.BundleAware;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -18,11 +18,12 @@ import gestion.ecole.dao.ProfesseurDAO;
 import gestion.ecole.models.Module;
 import gestion.ecole.models.Professeur;
 
-
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class ModuleController {
+public class ModuleController implements BundleAware {
+
     @FXML
     private TextField nomField, codeField, professeurIdField;
 
@@ -34,8 +35,10 @@ public class ModuleController {
 
     @FXML
     private TableColumn<Module, Integer> idColumn, professeurIdColumn;
+
     @FXML
     private TableColumn<Module, String> nomColumn, codeColumn;
+
     @FXML
     private TableColumn<Module, Void> actionColumn;
 
@@ -44,6 +47,13 @@ public class ModuleController {
 
     private final ModuleDAO moduleDAO = new ModuleDAO();
     private final ObservableList<Module> moduleList = FXCollections.observableArrayList();
+    private ResourceBundle bundle;
+
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+        updateTexts();
+    }
 
     @FXML
     public void initialize() {
@@ -55,21 +65,22 @@ public class ModuleController {
                 new SimpleStringProperty(cellData.getValue().getCodeModule()));
         professeurIdColumn.setCellValueFactory(cellData ->
                 new SimpleIntegerProperty(cellData.getValue().getProfesseurId()).asObject());
+
         addButtonToTable();
         addDetailButtonToTable();
-
         loadModules();
     }
+
     @FXML
     private void loadModules() {
-        moduleList.setAll(moduleDAO .getAll());
+        moduleList.setAll(moduleDAO.getAll());
         moduleTable.setItems(moduleList);
     }
 
     @FXML
     private void addModule() {
         Module module = new Module(0, nomField.getText(), codeField.getText(), Integer.parseInt(professeurIdField.getText()));
-        if (moduleDAO .insert(module)) {
+        if (moduleDAO.insert(module)) {
             loadModules();
             clearFields();
         }
@@ -79,42 +90,37 @@ public class ModuleController {
     private void updateModule() {
         Module selected = moduleTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Mise à jour des champs du module
             selected.setNomModule(nomField.getText());
             selected.setCodeModule(codeField.getText());
-            selected.setProfesseurId(Integer.parseInt(professeurIdField.getText())); // Inclure professeur_id
+            selected.setProfesseurId(Integer.parseInt(professeurIdField.getText()));
 
-            // Appel à la méthode update du DAO
             if (moduleDAO.update(selected)) {
                 loadModules();
                 clearFields();
-                showAlert("Succès", "Le module a été mis à jour avec succès.");
+                showAlert(bundle.getString("alert.success"), bundle.getString("module.update.success"));
             } else {
-                showAlert("Erreur", "Impossible de mettre à jour le module.");
+                showAlert(bundle.getString("alert.error"), bundle.getString("module.update.error"));
             }
         } else {
-            showAlert("Attention", "Veuillez sélectionner un module.");
+            showAlert(bundle.getString("alert.warning"), bundle.getString("module.select"));
         }
     }
-
 
     @FXML
     private void deleteModule() {
         Module selected = moduleTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            // Appel à la méthode delete du DAO
             if (moduleDAO.delete(selected.getId())) {
                 loadModules();
                 clearFields();
-                showAlert("Succès", "Le module a été supprimé avec succès.");
+                showAlert(bundle.getString("alert.success"), bundle.getString("module.delete.success"));
             } else {
-                showAlert("Erreur", "Impossible de supprimer le module.");
+                showAlert(bundle.getString("alert.error"), bundle.getString("module.delete.error"));
             }
         } else {
-            showAlert("Attention", "Veuillez sélectionner un module.");
+            showAlert(bundle.getString("alert.warning"), bundle.getString("module.select"));
         }
     }
-
 
     private void clearFields() {
         nomField.clear();
@@ -130,24 +136,24 @@ public class ModuleController {
             moduleList.setAll(searchResults);
             moduleTable.setItems(moduleList);
         } else {
-            loadModules(); // Recharge tous les modules si le champ de recherche est vide
+            loadModules();
         }
     }
 
     private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
+        alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
     }
-
 
     private void addButtonToTable() {
         Callback<TableColumn<Module, Void>, TableCell<Module, Void>> cellFactory = new Callback<>() {
             @Override
             public TableCell<Module, Void> call(final TableColumn<Module, Void> param) {
                 return new TableCell<>() {
-                    private final Button btn = new Button("Ajouter un professeur");
+                    private final Button btn = new Button(bundle.getString("module.action.addProfesseur"));
 
                     {
                         btn.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;");
@@ -173,22 +179,21 @@ public class ModuleController {
         actionColumn.setCellFactory(cellFactory);
     }
 
-
     private void openProfesseurSelection(Module module) {
         if (module != null) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/admin/ProfesseursView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/admin/ProfesseursView.fxml"), bundle);
                 Parent root = loader.load();
 
                 ProfesseurController professeurController = loader.getController();
                 professeurController.setSelectedModule(module);
 
                 Stage stage = new Stage();
-                stage.setTitle("Sélectionner un professeur");
+                stage.setTitle(bundle.getString("professor.select.title"));
                 stage.setScene(new Scene(root));
                 stage.show();
             } catch (IOException e) {
-                System.out.println("Erreur lors de l'ouverture de la vue des professeurs : " + e.getMessage());
+                showAlert(bundle.getString("alert.error"), bundle.getString("professor.select.error"));
             }
         }
     }
@@ -198,7 +203,7 @@ public class ModuleController {
             @Override
             public TableCell<Module, Void> call(final TableColumn<Module, Void> param) {
                 return new TableCell<>() {
-                    private final Button btn = new Button("Détails");
+                    private final Button btn = new Button(bundle.getString("module.action.details"));
 
                     {
                         btn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;");
@@ -226,35 +231,37 @@ public class ModuleController {
 
     private void showProfesseurDetails(Module module) {
         if (module.getProfesseurId() == 0) {
-            showAlert("Information", "Aucun professeur n'est assigné à ce module.");
+            showAlert(bundle.getString("alert.info"), bundle.getString("module.no.professor"));
             return;
         }
 
         try {
-            ProfesseurDAO professeurDAO = new ProfesseurDAO(); // Utilisation de ProfesseurDAO
-            Professeur professeur = professeurDAO.get(module.getProfesseurId()); // Appel à la méthode get()
+            ProfesseurDAO professeurDAO = new ProfesseurDAO();
+            Professeur professeur = professeurDAO.get(module.getProfesseurId());
 
             if (professeur != null) {
-                // Fenêtre de détails
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Détails du professeur");
-                alert.setHeaderText("Informations sur le professeur");
+                alert.setTitle(bundle.getString("professor.details.title"));
+                alert.setHeaderText(bundle.getString("professor.details.header"));
                 alert.setContentText(
-                        "Nom : " + professeur.getNom() + "\n" +
-                                "Prénom : " + professeur.getPrenom() + "\n" +
-                                "Spécialité : " + professeur.getSpecialite() + "\n" +
-                                "Utilisateur ID : " + professeur.getUtilisateur_id() // Ajout de utilisateur_id
+                        bundle.getString("professor.details.name") + ": " + professeur.getNom() + "\n" +
+                                bundle.getString("professor.details.prenom") + ": " + professeur.getPrenom() + "\n" +
+                                bundle.getString("professor.details.specialite") + ": " + professeur.getSpecialite()
                 );
                 alert.showAndWait();
             } else {
-                showAlert("Erreur", "Impossible de récupérer les détails du professeur.");
+                showAlert(bundle.getString("alert.error"), bundle.getString("professor.details.error"));
             }
         } catch (Exception e) {
-            showAlert("Erreur", "Une erreur est survenue : " + e.getMessage());
+            showAlert(bundle.getString("alert.error"), bundle.getString("professor.details.error") + e.getMessage());
         }
     }
 
-
-
-
+    private void updateTexts() {
+        // Update any text in the UI dynamically
+        searchField.setPromptText(bundle.getString("module.search.prompt"));
+        nomField.setPromptText(bundle.getString("module.name.prompt"));
+        codeField.setPromptText(bundle.getString("module.code.prompt"));
+        professeurIdField.setPromptText(bundle.getString("module.professorId.prompt"));
+    }
 }

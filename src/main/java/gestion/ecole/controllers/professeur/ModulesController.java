@@ -1,5 +1,6 @@
 package gestion.ecole.controllers.professeur;
 
+import gestion.ecole.controllers.BundleAware;
 import gestion.ecole.controllers.UserAwareController;
 import gestion.ecole.models.Etudiant;
 import gestion.ecole.models.Module;
@@ -16,8 +17,10 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class ModulesController implements UserAwareController {
+public class ModulesController implements UserAwareController, BundleAware {
+
     @FXML
     private ListView<Module> moduleListView;
 
@@ -25,26 +28,10 @@ public class ModulesController implements UserAwareController {
     private TableView<Etudiant> studentTableView;
 
     @FXML
-    private TableColumn<Etudiant, String> colMatricule;
+    private TableColumn<Etudiant, String> colMatricule, colNom, colPrenom, colDateNaissance, colEmail, colPromotion;
 
     @FXML
-    private TableColumn<Etudiant, String> colNom;
-
-    @FXML
-    private TableColumn<Etudiant, String> colPrenom;
-
-    @FXML
-    private TableColumn<Etudiant, String> colDateNaissance;
-
-    @FXML
-    private TableColumn<Etudiant, String> colEmail;
-
-    @FXML
-    private TableColumn<Etudiant, String> colPromotion;
-
-
-    @FXML
-    private TextField searchField; // TextField for the search term
+    private TextField searchField;
 
     private final ModuleService moduleService = new ModuleService();
     private final EtudiantService etudiantService = new EtudiantService();
@@ -53,10 +40,27 @@ public class ModulesController implements UserAwareController {
 
     private int professorId;
     private int selectedModuleId;
+    private ResourceBundle bundle;
+
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+        colMatricule.setCellValueFactory(new PropertyValueFactory<>("matricule"));
+        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("dateNaissance"));
+        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        colPromotion.setCellValueFactory(new PropertyValueFactory<>("promotion"));
+        moduleListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                loadStudents(newSelection.getId());
+            }
+        });
+        updateTexts();
+    }
 
     @Override
     public void setUserId(int userId) {
-        System.out.println("User ID in ModulesController: " + userId);
         setProfessorId(professeurService.getProfesseurIdByUserId(userId));
     }
 
@@ -77,25 +81,25 @@ public class ModulesController implements UserAwareController {
         ObservableList<Etudiant> studentList = FXCollections.observableArrayList(students);
         studentTableView.setItems(studentList);
     }
+
     @FXML
     private void exportToCSV() {
         Module selectedModule = moduleListView.getSelectionModel().getSelectedItem();
         if (selectedModule == null) {
-            showAlert("Erreur", "Aucun module sélectionné", "Veuillez sélectionner un module pour exporter les étudiants.", Alert.AlertType.ERROR);
+            showAlert(bundle.getString("alert.error"), bundle.getString("module.no.selection"), bundle.getString("module.no.selection.message"), Alert.AlertType.ERROR);
             return;
         }
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Enregistrer le fichier CSV");
+        fileChooser.setTitle(bundle.getString("filechooser.save.csv"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-        // Set a default file name
-        fileChooser.setInitialFileName("Etudiants_" + selectedModule.getNomModule().replaceAll(" ", "_") + ".csv");
+        fileChooser.setInitialFileName(bundle.getString("export.file.name.csv").replace("{module_name}", selectedModule.getNomModule().replace(" ", "_")));
 
         File file = fileChooser.showSaveDialog(studentTableView.getScene().getWindow());
-
         if (file != null) {
             List<Etudiant> students = etudiantService.getStudentsByModule(selectedModule.getId());
             pdfService.generateCSV(students, file.getAbsolutePath());
+            showAlert(bundle.getString("alert.success"), bundle.getString("export.success.csv"), "", Alert.AlertType.INFORMATION);
         }
     }
 
@@ -103,20 +107,20 @@ public class ModulesController implements UserAwareController {
     private void exportToPDF() {
         Module selectedModule = moduleListView.getSelectionModel().getSelectedItem();
         if (selectedModule == null) {
-            showAlert("Erreur", "Aucun module sélectionné", "Veuillez sélectionner un module pour exporter les étudiants.", Alert.AlertType.ERROR);
+            showAlert(bundle.getString("alert.error"), bundle.getString("module.no.selection"), bundle.getString("module.no.selection.message"), Alert.AlertType.ERROR);
             return;
         }
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Enregistrer le fichier PDF");
+        fileChooser.setTitle(bundle.getString("filechooser.save.pdf"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-        fileChooser.setInitialFileName("Etudiants_" + selectedModule.getNomModule().replaceAll(" ", "_") + ".pdf");
+        fileChooser.setInitialFileName(bundle.getString("export.file.name.pdf").replace("{module_name}", selectedModule.getNomModule().replace(" ", "_")));
 
         File file = fileChooser.showSaveDialog(studentTableView.getScene().getWindow());
-
         if (file != null) {
             List<Etudiant> students = etudiantService.getStudentsByModule(selectedModule.getId());
             pdfService.generatePDF(students, selectedModule.getNomModule(), file.getAbsolutePath());
+            showAlert(bundle.getString("alert.success"), bundle.getString("export.success.pdf"), "", Alert.AlertType.INFORMATION);
         }
     }
 
@@ -150,17 +154,16 @@ public class ModulesController implements UserAwareController {
 
     @FXML
     public void initialize() {
-        colMatricule.setCellValueFactory(new PropertyValueFactory<>("matricule"));
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        colPrenom.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        colDateNaissance.setCellValueFactory(new PropertyValueFactory<>("dateNaissance"));
-        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colPromotion.setCellValueFactory(new PropertyValueFactory<>("promotion"));
 
-        moduleListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                loadStudents(newSelection.getId());
-            }
-        });
+    }
+
+    private void updateTexts() {
+        colMatricule.setText(bundle.getString("column.matricule"));
+        colNom.setText(bundle.getString("column.nom"));
+        colPrenom.setText(bundle.getString("column.prenom"));
+        colDateNaissance.setText(bundle.getString("column.dateNaissance"));
+        colEmail.setText(bundle.getString("column.email"));
+        colPromotion.setText(bundle.getString("column.promotion"));
+        searchField.setPromptText(bundle.getString("student.search.prompt"));
     }
 }
