@@ -4,93 +4,78 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="10" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="gestion.ecole.controllers.secretaire.InscriptionsController">
+<VBox spacing="15" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="gestion.ecole.controllers.secretaire.InscriptionsController"
+      style="-fx-background-color: #f0f2f5;">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
     <!-- En-tête -->
-    <Label text="Gestion des Inscriptions" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-    <VBox spacing="10">
-        <padding>
-            <Insets top="20" right="20" bottom="20" left="20"/>
-        </padding>
+    <Label text="Gestion des Inscriptions"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
 
-        <!-- Zone de recherche -->
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Rechercher :" />
-            <TextField fx:id="searchField" promptText="Nom d'étudiant ou nom de module" HBox.hgrow="ALWAYS"/>
-            <Button text="Rechercher" onAction="#handleRechercher"/>
-            <Button text="Rafraîchir" onAction="#handleRefresh"/>
-        </HBox>
+    <!-- Zone de recherche -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);">
+        <Label text="Rechercher :" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="searchField" promptText="Nom d'étudiant ou nom de module" HBox.hgrow="ALWAYS"
+                   style="-fx-padding: 8; -fx-background-radius: 4;"/>
+        <Button text="Rechercher" onAction="#handleRechercher"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 4;"/>
+        <Button text="Rafraîchir" onAction="#handleRefresh"
+                style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-padding: 8 15; -fx-background-radius: 4;"/>
+    </HBox>
 
-        <!-- Zone d'ajout existante -->
-        <GridPane hgap="10" vgap="10">
-            <!-- Vos éléments existants -->
-        </GridPane>
-
-        <!-- Le reste de votre FXML -->
-    </VBox>
     <!-- Formulaire d'ajout -->
-    <GridPane hgap="10" vgap="10">
+    <GridPane hgap="10" vgap="10"
+              style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);">
         <padding>
             <Insets top="10" bottom="10"/>
         </padding>
 
-        <!-- Première ligne -->
-        <ComboBox fx:id="etudiantComboBox"
-                  promptText="Sélectionner un étudiant"
-                  GridPane.columnIndex="0"
-                  GridPane.rowIndex="0"
-                  maxWidth="Infinity"/>
+        <ComboBox fx:id="etudiantComboBox" promptText="Sélectionner un étudiant"
+                  GridPane.columnIndex="0" GridPane.rowIndex="0" maxWidth="Infinity"
+                  style="-fx-padding: 8; -fx-background-radius: 4;"/>
 
-        <ComboBox fx:id="moduleComboBox"
-                  promptText="Sélectionner un module"
-                  GridPane.columnIndex="1"
-                  GridPane.rowIndex="0"
-                  maxWidth="Infinity"/>
+        <ComboBox fx:id="moduleComboBox" promptText="Sélectionner un module"
+                  GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity"
+                  style="-fx-padding: 8; -fx-background-radius: 4;"/>
 
         <DatePicker fx:id="datePicker"
-                    GridPane.columnIndex="2"
-                    GridPane.rowIndex="0"
-                    maxWidth="Infinity"/>
+                    GridPane.columnIndex="2" GridPane.rowIndex="0" maxWidth="Infinity"
+                    style="-fx-background-radius: 4;"/>
 
-        <Button text="Ajouter une inscription"
-                onAction="#handleAjouterInscription"
-                GridPane.columnIndex="3"
-                GridPane.rowIndex="0"/>
+        <Button text="Ajouter une inscription" onAction="#handleAjouterInscription"
+                GridPane.columnIndex="3" GridPane.rowIndex="0"
+                style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 4;"/>
     </GridPane>
 
     <!-- Table des inscriptions -->
-    <TableView fx:id="tableInscriptions" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableInscriptions" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);">
         <columns>
-            <TableColumn fx:id="columnId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="columnId" text="ID" prefWidth="50" style="-fx-alignment: center;"/>
             <TableColumn fx:id="columnEtudiant" text="Étudiant" prefWidth="200"/>
             <TableColumn fx:id="columnModule" text="Module" prefWidth="200"/>
-            <TableColumn fx:id="columnDate" text="Date d'inscription" prefWidth="150"/>
+            <TableColumn fx:id="columnDate" text="Date d'inscription" prefWidth="150" style="-fx-alignment: center;"/>
         </columns>
     </TableView>
 
     <!-- Barre d'outils -->
-    <HBox spacing="10">
-        <Button text="Supprimer"
-                onAction="#handleSupprimerInscription"
-                style="-fx-background-color: #ff4444; -fx-text-fill: white;"/>
+    <HBox spacing="10" alignment="CENTER_RIGHT"
+          style="-fx-padding: 10;">
+        <Button text="Supprimer" onAction="#handleSupprimerInscription"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 4;"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Exporter PDF"
-                onAction="#handleExportPDF"
-                style="-fx-background-color: #4444ff; -fx-text-fill: white;"/>
-        <Button text="Exporter CSV"
-                onAction="#handleExportCSV"
-                style="-fx-background-color: #44ff44; -fx-text-fill: white;"/>
+        <Button text="Exporter PDF" onAction="#handleExportPDF"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 4;"/>
+        <Button text="Exporter CSV" onAction="#handleExportCSV"
+                style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 4;"/>
     </HBox>
 
     <!-- Message d'état -->
-    <Label fx:id="messageLabel"
-           wrapText="true"
-           style="-fx-padding: 10;"/>
-
+    <Label fx:id="messageLabel" wrapText="true"
+           style="-fx-padding: 10; -fx-font-size: 13px; -fx-text-fill: #27ae60;"/>
 </VBox>

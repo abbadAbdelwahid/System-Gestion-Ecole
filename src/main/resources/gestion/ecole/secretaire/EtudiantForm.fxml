@@ -1,37 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gestion.ecole.controllers.secretaire.EtudiantFormController">
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="gestion.ecole.controllers.secretaire.EtudiantFormController"
+            style="-fx-background-color: #f0f2f5;">
     <children>
-        <VBox prefHeight="412.0" prefWidth="370.0" spacing="10">
+        <VBox prefHeight="412.0" prefWidth="370.0" spacing="12"
+              style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
-            <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Formulaire Étudiant" />
-            <Label text="Matricule *" />
-            <TextField fx:id="matriculeField" />
-            <Label text="Nom *" />
-            <TextField fx:id="nomField" />
-            <Label text="Prénom *" />
-            <TextField fx:id="prenomField" />
-            <Label text="Date de naissance *" />
-            <DatePicker fx:id="dateNaissanceField" prefHeight="26.0" prefWidth="154.0" />
-            <Label text="Email" />
-            <TextField fx:id="emailField" />
-            <Label text="Promotion" />
-            <TextField fx:id="promotionField" />
-            <Label fx:id="lblMessage" />
-            <HBox alignment="CENTER" spacing="10">
-                <Button onAction="#validerEtudiant" text="Valider" />
-                <Button onAction="#annulerAction" text="Annuler" />
+
+            <!-- Titre -->
+            <Label text="Formulaire Étudiant"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+            <!-- Champs -->
+            <VBox spacing="5">
+                <Label text="Matricule *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="matriculeField"
+                           style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Nom *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="nomField"
+                           style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Prénom *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="prenomField"
+                           style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Date de naissance *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <DatePicker fx:id="dateNaissanceField" maxWidth="Infinity"
+                            style="-fx-background-radius: 4;"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Email" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="emailField"
+                           style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
+            </VBox>
+
+            <VBox spacing="5">
+                <Label text="Promotion" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="promotionField"
+                           style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
+            </VBox>
+
+            <Label fx:id="lblMessage" style="-fx-text-fill: #27ae60;"/>
+
+            <!-- Boutons -->
+            <HBox alignment="CENTER" spacing="15">
+                <Button onAction="#validerEtudiant" text="Valider"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 30; -fx-background-radius: 4;"/>
+                <Button onAction="#annulerAction" text="Annuler"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 30; -fx-background-radius: 4;"/>
             </HBox>
         </VBox>
     </children>

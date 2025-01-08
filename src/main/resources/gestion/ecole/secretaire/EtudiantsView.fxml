@@ -1,53 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gestion.ecole.controllers.secretaire.EtudiantsController">
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="gestion.ecole.controllers.secretaire.EtudiantsController"
+            style="-fx-background-color: #f5f6fa;">
     <center>
-        <VBox spacing="10">
+        <VBox spacing="15">
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
+            <!-- Titre -->
+            <Label text="Gestion des Étudiants"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
             <!-- Barre de recherche -->
-            <HBox spacing="10">
-                <Label text="Rechercher :" />
-                <TextField fx:id="searchField" promptText="Nom ou matricule" />
-                <Button onAction="#handleRechercheEtudiant" text="Rechercher" />
-                <Button onAction="#handleRefreshTable" text="Rafraîchir" />
+            <HBox spacing="10" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 5;">
+                <Label text="Rechercher :" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="searchField" promptText="Nom ou matricule"
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-padding: 7; -fx-background-radius: 5;"/>
+                <Button onAction="#handleRechercheEtudiant" text="Rechercher"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 7 15; -fx-background-radius: 5;"/>
+                <Button onAction="#handleRefreshTable" text="Rafraîchir"
+                        style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 7 15; -fx-background-radius: 5;"/>
             </HBox>
 
             <!-- Tableau des étudiants -->
-            <TableView fx:id="tableEtudiants" prefHeight="300" prefWidth="790.0">
+            <TableView fx:id="tableEtudiants" VBox.vgrow="ALWAYS"
+                       style="-fx-background-radius: 5; -fx-border-radius: 5;">
                 <columns>
-                    <TableColumn fx:id="columnNom" prefWidth="150" text="Nom" />
-                    <TableColumn fx:id="columnPrenom" prefWidth="150" text="Prénom" />
-                    <TableColumn fx:id="columnEmail" prefWidth="200" text="Email" />
-                    <TableColumn fx:id="columnMatricule" prefWidth="100" text="Matricule" />
-                    <TableColumn fx:id="columnPromotion" prefWidth="150" text="Promotion" />
-                    <TableColumn fx:id="columnDateNaissance" prefWidth="150" text="Date de Naissance" />
+                    <TableColumn fx:id="columnNom" text="Nom" prefWidth="150"/>
+                    <TableColumn fx:id="columnPrenom" text="Prénom" prefWidth="150"/>
+                    <TableColumn fx:id="columnEmail" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="columnMatricule" text="Matricule" prefWidth="100"/>
+                    <TableColumn fx:id="columnPromotion" text="Promotion" prefWidth="100"/>
+                    <TableColumn fx:id="columnDateNaissance" text="Date de Naissance" prefWidth="150"/>
                 </columns>
+                <style>
+                    -fx-background-color: white;
+                    -fx-border-color: #dcdde1;
+                    -fx-border-width: 1;
+                </style>
             </TableView>
 
             <!-- Boutons d'action -->
-            <!-- Dans le HBox des boutons d'action -->
-            <HBox alignment="CENTER" spacing="10">
-                <Button fx:id="btnAjouter" onAction="#handleAjouterEtudiant" text="Ajouter" />
-                <Button fx:id="btnModifier" onAction="#handleModifierEtudiant" text="Modifier" />
-                <Button fx:id="btnSupprimer" onAction="#handleSupprimerEtudiant" text="Supprimer" />
-                <!-- Ajoutez ces deux boutons -->
-                <Button fx:id="btnExportPDF" onAction="#handleExportPDF" text="Exporter PDF" />
-                <Button fx:id="btnExportCSV" onAction="#handleExportCSV" text="Exporter CSV" />
+            <HBox alignment="CENTER" spacing="15">
+                <Button fx:id="btnAjouter" onAction="#handleAjouterEtudiant" text="Ajouter"
+                        style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-padding: 7 20; -fx-background-radius: 5;"/>
+                <Button fx:id="btnModifier" onAction="#handleModifierEtudiant" text="Modifier"
+                        style="-fx-background-color: #f1c40f; -fx-text-fill: white; -fx-padding: 7 20; -fx-background-radius: 5;"/>
+                <Button fx:id="btnSupprimer" onAction="#handleSupprimerEtudiant" text="Supprimer"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 7 20; -fx-background-radius: 5;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnExportPDF" onAction="#handleExportPDF" text="Exporter PDF"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 7 20; -fx-background-radius: 5;"/>
+                <Button fx:id="btnExportCSV" onAction="#handleExportCSV" text="Exporter CSV"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 7 20; -fx-background-radius: 5;"/>
             </HBox>
-            <Label fx:id="lblMessage" text="" textFill="green" />
+
+            <!-- Message -->
+            <Label fx:id="lblMessage" text="" textFill="green"
+                   style="-fx-padding: 10; -fx-font-size: 14px;"/>
         </VBox>
     </center>
 </BorderPane>
