@@ -1,5 +1,6 @@
 package gestion.ecole.controllers.professeur;
 
+import gestion.ecole.controllers.BundleAware;
 import gestion.ecole.controllers.UserAwareController;
 import gestion.ecole.models.Etudiant;
 import gestion.ecole.models.Module;
@@ -16,8 +17,9 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class ModulesController implements UserAwareController {
+public class ModulesController implements UserAwareController, BundleAware {
     @FXML
     private ListView<Module> moduleListView;
 
@@ -53,6 +55,11 @@ public class ModulesController implements UserAwareController {
 
     private int professorId;
     private int selectedModuleId;
+    private ResourceBundle bundle;
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
 
     @Override
     public void setUserId(int userId) {

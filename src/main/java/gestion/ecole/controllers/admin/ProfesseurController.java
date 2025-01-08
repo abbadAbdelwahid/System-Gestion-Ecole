@@ -1,10 +1,13 @@
 package gestion.ecole.controllers.admin;
 
-
+import gestion.ecole.controllers.BundleAware;
 import gestion.ecole.controllers.MainController;
 import gestion.ecole.controllers.MainControllerAware;
-import gestion.ecole.controllers.UserAwareController;
 import gestion.ecole.controllers.professeur.ModulesController;
+import gestion.ecole.dao.ModuleDAO;
+import gestion.ecole.dao.ProfesseurDAO;
+import gestion.ecole.models.Module;
+import gestion.ecole.models.Professeur;
 import gestion.ecole.models.Utilisateur;
 import gestion.ecole.services.UtilisateurService;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -18,38 +21,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import gestion.ecole.models.Module;
-import gestion.ecole.dao.ModuleDAO;
-import gestion.ecole.dao.ProfesseurDAO;
-import gestion.ecole.models.Professeur;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.security.cert.PolicyNode;
-import java.util.List;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-public class ProfesseurController implements MainControllerAware {
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.ResourceBundle;
+
+public class ProfesseurController implements MainControllerAware, BundleAware {
 
     @FXML
-    private TextField nomField;
-
-    @FXML
-    private TextField prenomField;
-
-    @FXML
-    private TextField specialiteField;
-
-    @FXML
-    private TextField utilisateurIdField;
-
-
+    private TextField nomField, prenomField, specialiteField, searchField;
 
     @FXML
     private TableView<Professeur> professeurTable;
@@ -58,65 +45,42 @@ public class ProfesseurController implements MainControllerAware {
     private TableColumn<Professeur, Integer> idColumn;
 
     @FXML
-    private TableColumn<Professeur, String> nomColumn;
-
-    @FXML
-    private TableColumn<Professeur, String> prenomColumn;
-
-    @FXML
-    private TableColumn<Professeur, String> specialiteColumn;
-
-    @FXML
-    private Button addButton;
-
-    @FXML
-    private Button updateButton;
-
-    @FXML
-    private Button deleteButton;
-
-    @FXML
-    private TextField searchField;
-
-
-    private MainController mainController;
-
-
-
+    private TableColumn<Professeur, String> nomColumn, prenomColumn, specialiteColumn;
 
     private final ProfesseurDAO professeurDAO = new ProfesseurDAO();
     private final ObservableList<Professeur> professeurList = FXCollections.observableArrayList();
+    private ResourceBundle bundle;
+    private MainController mainController;
 
+    private final ModuleDAO moduleDAO = new ModuleDAO();
+    private Module selectedModule;
 
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+        updateTexts();
+    }
+
+    @Override
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     @FXML
     public void initialize() {
-
-        idColumn.setCellValueFactory(cellData ->
-                new SimpleIntegerProperty(cellData.getValue().getId()).asObject()
-        );
-
-        nomColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getNom())
-        );
-        prenomColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getPrenom())
-        );
-        specialiteColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getSpecialite())
-        );
+        idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+        nomColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNom()));
+        prenomColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPrenom()));
+        specialiteColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSpecialite()));
 
         loadProfesseurs();
     }
-
 
     @FXML
     private void loadProfesseurs() {
         professeurList.setAll(professeurDAO.getAll());
         professeurTable.setItems(professeurList);
     }
-
-
 
     @FXML
     private void addProfesseur() {
@@ -126,41 +90,36 @@ public class ProfesseurController implements MainControllerAware {
 
         if (!nom.isEmpty() && !prenom.isEmpty() && !specialite.isEmpty()) {
             try {
+                UtilisateurService utilisateurService = new UtilisateurService();
                 String username = nom + prenom;
                 String password = "password";
                 String role = "professor";
 
-                UtilisateurService utilisateurService = new UtilisateurService();
                 Utilisateur utilisateur = utilisateurService.addUser(username, password, role);
-
                 if (utilisateur != null) {
-                    int utilisateurId = utilisateur.getId();
-                    Professeur professeur = new Professeur(0, nom, prenom, specialite, utilisateurId);
+                    Professeur professeur = new Professeur(0, nom, prenom, specialite, utilisateur.getId());
                     if (professeurDAO.insert(professeur)) {
                         loadProfesseurs();
                         clearFields();
-                        showAlert("Succès", "Le professeur a été ajouté avec succès.");
+                        showAlert(bundle.getString("alert.success"), bundle.getString("professor.add.success"));
                     } else {
-                        showAlert("Erreur", "Impossible d'ajouter le professeur.");
+                        showAlert(bundle.getString("alert.error"), bundle.getString("professor.add.error"));
                     }
                 } else {
-                    showAlert("Erreur", "Impossible de créer l'utilisateur.");
+                    showAlert(bundle.getString("alert.error"), bundle.getString("user.creation.error"));
                 }
             } catch (Exception e) {
-                showAlert("Erreur", "Une erreur s'est produite : " + e.getMessage());
+                showAlert(bundle.getString("alert.error"), bundle.getString("generic.error") + e.getMessage());
             }
         } else {
-            showAlert("Attention", "Veuillez remplir tous les champs.");
+            showAlert(bundle.getString("alert.warning"), bundle.getString("professor.fill.fields"));
         }
     }
-
-
 
     @FXML
     private void updateProfesseur() {
         Professeur selected = professeurTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-
             selected.setNom(nomField.getText());
             selected.setPrenom(prenomField.getText());
             selected.setSpecialite(specialiteField.getText());
@@ -168,78 +127,28 @@ public class ProfesseurController implements MainControllerAware {
             if (professeurDAO.update(selected)) {
                 loadProfesseurs();
                 clearFields();
-                showAlert("Succès", "Le professeur a été mis à jour avec succès.");
+                showAlert(bundle.getString("alert.success"), bundle.getString("professor.update.success"));
             } else {
-                showAlert("Erreur", "Impossible de mettre à jour le professeur.");
+                showAlert(bundle.getString("alert.error"), bundle.getString("professor.update.error"));
             }
         } else {
-            showAlert("Attention", "Veuillez sélectionner un professeur.");
+            showAlert(bundle.getString("alert.warning"), bundle.getString("professor.select"));
         }
     }
-
 
     @FXML
     private void deleteProfesseur() {
         Professeur selected = professeurTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-
             if (professeurDAO.delete(selected.getId())) {
                 loadProfesseurs();
                 clearFields();
-                showAlert("Succès", "Le professeur a été supprimé avec succès.");
+                showAlert(bundle.getString("alert.success"), bundle.getString("professor.delete.success"));
             } else {
-                showAlert("Erreur", "Impossible de supprimer le professeur.");
+                showAlert(bundle.getString("alert.error"), bundle.getString("professor.delete.error"));
             }
         } else {
-            showAlert("Attention", "Veuillez sélectionner un professeur.");
-        }
-    }
-
-
-    private void clearFields() {
-        nomField.clear();
-        prenomField.clear();
-        specialiteField.clear();
-    }
-
-    private void showAlert(String title, String content) {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle(title);
-
-        Label contentLabel = new Label(content);
-        contentLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #34495e;");
-
-        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(okButtonType);
-
-        dialog.getDialogPane().setContent(contentLabel);
-        dialog.getDialogPane().setStyle("-fx-background-color: #ffffff; -fx-border-color: #dcdcdc; -fx-border-width: 1;");
-        dialog.showAndWait();
-    }
-
-
-    @Override
-    public void setMainController(MainController mainController) {
-         this.mainController = mainController;
-    }
-
-    @FXML
-    private void handleRowClick(MouseEvent event) throws IOException {
-        if (event.getClickCount() == 2) {
-            Professeur selectedProfesseur = professeurTable.getSelectionModel().getSelectedItem();
-            if (selectedProfesseur != null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/professeur/ModulesView.fxml"));
-                Pane newView = loader.load();
-
-                Object controller = loader.getController();
-                if (controller instanceof ModulesController) {
-                    ((ModulesController) controller).setProfessorId(selectedProfesseur.getId());
-                }
-
-                if (mainController != null) {
-                    mainController.setContentPane(newView);
-                }
-            }
+            showAlert(bundle.getString("alert.warning"), bundle.getString("professor.select"));
         }
     }
 
@@ -247,24 +156,12 @@ public class ProfesseurController implements MainControllerAware {
     private void searchProfesseurs() {
         String keyword = searchField.getText();
         if (!keyword.isEmpty()) {
-            List<Professeur> searchResults = professeurDAO.searchProfesseurs(keyword);
-            professeurList.setAll(searchResults);
+            professeurList.setAll(professeurDAO.searchProfesseurs(keyword));
             professeurTable.setItems(professeurList);
         } else {
             loadProfesseurs();
         }
     }
-
-
-
-    private Module selectedModule;
-
-    public void setSelectedModule(Module module) {
-        this.selectedModule = module;
-    }
-
-
-    private final ModuleDAO moduleDAO = new ModuleDAO();
 
     @FXML
     private void assignProfesseurToModule() {
@@ -272,72 +169,69 @@ public class ProfesseurController implements MainControllerAware {
         if (selectedProfesseur != null && selectedModule != null) {
             selectedModule.setProfesseurId(selectedProfesseur.getId());
             if (moduleDAO.update(selectedModule)) {
-                showAlert("Succès", "Professeur assigné avec succès !");
+                showAlert(bundle.getString("alert.success"), bundle.getString("professor.assign.success"));
                 Stage stage = (Stage) professeurTable.getScene().getWindow();
                 stage.close();
             } else {
-                showAlert("Erreur", "Impossible d'assigner le professeur.");
+                showAlert(bundle.getString("alert.error"), bundle.getString("professor.assign.error"));
             }
         } else {
-            showAlert("Avertissement", "Veuillez sélectionner un professeur.");
+            showAlert(bundle.getString("alert.warning"), bundle.getString("professor.select"));
         }
     }
-
 
     @FXML
     private void exportProfesseursToCSV() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Enregistrer la liste des professeurs");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv"));
-        fileChooser.setInitialFileName("Liste_Professeurs"  + ".pdf");
-        File file = fileChooser.showSaveDialog(null);
+        fileChooser.setTitle(bundle.getString("filechooser.save.csv"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName(bundle.getString("professor.list.filename.csv"));
 
+        File file = fileChooser.showSaveDialog(null);
         if (file != null) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                // En-tête du CSV
-                writer.write("ID,Nom,Prénom,Spécialité,Utilisateur ID");
+                writer.write(bundle.getString("professor.list.csv.header"));
                 writer.newLine();
-
                 for (Professeur professeur : professeurList) {
                     writer.write(professeur.getId() + "," + professeur.getNom() + "," + professeur.getPrenom() + "," + professeur.getSpecialite() + "," + professeur.getUtilisateur_id());
                     writer.newLine();
                 }
-
-
-                showAlert("Succès", "La liste des professeurs a été exportée avec succès.");
+                showAlert(bundle.getString("alert.success"), bundle.getString("professor.export.success.csv"));
             } catch (IOException e) {
-                showAlert("Erreur", "Une erreur s'est produite lors de l'exportation : " + e.getMessage());
+                showAlert(bundle.getString("alert.error"), bundle.getString("professor.export.error.csv") + e.getMessage());
             }
         }
     }
 
+
+    public void setSelectedModule(Module module) {
+        this.selectedModule = module;
+    }
     @FXML
     private void exportProfesseursToPDF() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Enregistrer la liste des professeurs");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
-        fileChooser.setInitialFileName("Liste_Professeurs"  + ".pdf");
+        fileChooser.setTitle(bundle.getString("filechooser.save.pdf"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        fileChooser.setInitialFileName(bundle.getString("professor.list.filename.pdf"));
 
         File file = fileChooser.showSaveDialog(null);
-
         if (file != null) {
             try (PDDocument document = new PDDocument()) {
                 PDPage page = new PDPage();
                 document.addPage(page);
 
                 PDPageContentStream contentStream = new PDPageContentStream(document, page);
-
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
                 contentStream.beginText();
                 contentStream.setLeading(15f);
                 contentStream.newLineAtOffset(50, 750);
 
-                contentStream.showText("Liste des Professeurs");
+                contentStream.showText(bundle.getString("professor.list.pdf.title"));
                 contentStream.newLine();
                 contentStream.newLine();
 
                 contentStream.setFont(PDType1Font.HELVETICA, 12);
-                contentStream.showText("ID      Nom           Prénom       Spécialité    Utilisateur ID");
+                contentStream.showText(bundle.getString("professor.list.pdf.header"));
                 contentStream.newLine();
 
                 for (Professeur professeur : professeurList) {
@@ -351,21 +245,54 @@ public class ProfesseurController implements MainControllerAware {
                     contentStream.newLine();
                 }
 
-
                 contentStream.endText();
                 contentStream.close();
 
                 document.save(file);
-                showAlert("Succès", "La liste des professeurs a été exportée en PDF avec succès.");
+                showAlert(bundle.getString("alert.success"), bundle.getString("professor.export.success.pdf"));
             } catch (IOException e) {
-                showAlert("Erreur", "Une erreur s'est produite lors de l'exportation : " + e.getMessage());
-                e.printStackTrace();
+                showAlert(bundle.getString("alert.error"), bundle.getString("professor.export.error.pdf") + e.getMessage());
             }
         }
     }
 
+    private void clearFields() {
+        nomField.clear();
+        prenomField.clear();
+        specialiteField.clear();
+    }
 
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 
+    private void updateTexts() {
+        searchField.setPromptText(bundle.getString("professor.search.prompt"));
+        nomField.setPromptText(bundle.getString("professor.name.prompt"));
+        prenomField.setPromptText(bundle.getString("professor.firstname.prompt"));
+        specialiteField.setPromptText(bundle.getString("professor.speciality.prompt"));
+    }
 
+    @FXML
+    private void handleRowClick(MouseEvent event) throws IOException {
+        if (event.getClickCount() == 2) {
+            Professeur selectedProfesseur = professeurTable.getSelectionModel().getSelectedItem();
+            if (selectedProfesseur != null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/professeur/ModulesView.fxml"), bundle);
+                Pane newView = loader.load();
 
+                ModulesController controller = loader.getController();
+                controller.setProfessorId(selectedProfesseur.getId());
+                controller.setResourceBundle(bundle);
+
+                if (mainController != null) {
+                    mainController.setContentPane(newView);
+                }
+            }
+        }
+    }
 }
+

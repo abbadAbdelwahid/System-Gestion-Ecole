@@ -1,7 +1,6 @@
 package gestion.ecole.controllers;
 
 import gestion.ecole.services.UtilisateurService;
-import gestion.ecole.models.Utilisateur;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,6 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class LoginController {
 
@@ -28,6 +29,9 @@ public class LoginController {
     private Button loginButton;
 
     private final UtilisateurService utilisateurService = new UtilisateurService();
+
+    // Default ResourceBundle (French)
+    private final ResourceBundle resourceBundle = ResourceBundle.getBundle("texts.messages", Locale.FRENCH);
 
     @FXML
     private void handleLogin() {
@@ -49,26 +53,29 @@ public class LoginController {
 
     private void loadMainView() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/main-layout.fxml"));
+            // Pass the resource bundle while loading the FXML
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    getClass().getResource("/gestion/ecole/main-layout.fxml"),
+                    resourceBundle
+            );
+
             Scene scene = new Scene(fxmlLoader.load(), 1100, 600); // Set preferred width and height
 
-            // Pass the role to the MainController
+            // Pass the logged-in user details to the MainController
             MainController controller = fxmlLoader.getController();
-            System.out.println(utilisateurService.getLoggedInUserRole());
+//            controller.setResourceBundle(resourceBundle);
             controller.setUserId(utilisateurService.getLoggedInUser().getId());
             controller.setUserName(utilisateurService.getLoggedInUser().getUsername());
             controller.setUserRole(utilisateurService.getLoggedInUserRole());
-
+             // Pass the ResourceBundle
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Gestion École");
+            stage.setTitle(resourceBundle.getString("app.title")); // Use the translated title
             stage.setResizable(false); // Allow resizing if needed
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }

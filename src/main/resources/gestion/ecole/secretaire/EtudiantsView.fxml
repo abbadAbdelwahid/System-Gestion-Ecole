@@ -17,31 +17,31 @@
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
 
-            <!-- Barre de recherche -->
+            <!-- Search Bar -->
             <HBox spacing="10">
-                <Label text="Rechercher :" />
-                <TextField fx:id="searchField" promptText="Nom ou matricule" />
-                <Button onAction="#handleRechercheEtudiant" text="Rechercher" />
-                <Button onAction="#handleRefreshTable" text="Rafraîchir" />
+                <Label text="%search.label" />
+                <TextField fx:id="searchField" promptText="%search.placeholder" />
+                <Button onAction="#handleRechercheEtudiant" text="%button.search" />
+                <Button onAction="#handleRefreshTable" text="%button.refresh" />
             </HBox>
 
-            <!-- Tableau des étudiants -->
+            <!-- Students Table -->
             <TableView fx:id="tableEtudiants" prefHeight="300">
                 <columns>
-                    <TableColumn fx:id="columnNom" prefWidth="150" text="Nom" />
-                    <TableColumn fx:id="columnPrenom" prefWidth="150" text="Prénom" />
-                    <TableColumn fx:id="columnEmail" prefWidth="200" text="Email" />
-                    <TableColumn fx:id="columnMatricule" prefWidth="100" text="Matricule" />
-                    <TableColumn fx:id="columnPromotion" prefWidth="150" text="Promotion" />
-                    <TableColumn fx:id="columnDateNaissance" prefWidth="150" text="Date de Naissance" />
+                    <TableColumn fx:id="columnNom" prefWidth="150" text="%column.nom" />
+                    <TableColumn fx:id="columnPrenom" prefWidth="150" text="%column.prenom" />
+                    <TableColumn fx:id="columnEmail" prefWidth="200" text="%column.email" />
+                    <TableColumn fx:id="columnMatricule" prefWidth="100" text="%column.matricule" />
+                    <TableColumn fx:id="columnPromotion" prefWidth="150" text="%column.promotion" />
+                    <TableColumn fx:id="columnDateNaissance" prefWidth="150" text="%column.dateNaissance" />
                 </columns>
             </TableView>
 
-            <!-- Boutons d'action -->
+            <!-- Action Buttons -->
             <HBox alignment="CENTER" spacing="10">
-                <Button fx:id="btnAjouter" onAction="#handleAjouterEtudiant" text="Ajouter" />
-                <Button fx:id="btnModifier" onAction="#handleModifierEtudiant" text="Modifier" />
-                <Button fx:id="btnSupprimer" onAction="#handleSupprimerEtudiant" text="Supprimer" />
+                <Button fx:id="btnAjouter" onAction="#handleAjouterEtudiant" text="%button.add" />
+                <Button fx:id="btnModifier" onAction="#handleModifierEtudiant" text="%button.modify" />
+                <Button fx:id="btnSupprimer" onAction="#handleSupprimerEtudiant" text="%button.delete" />
             </HBox>
             <Label fx:id="lblMessage" text="" textFill="green" />
         </VBox>

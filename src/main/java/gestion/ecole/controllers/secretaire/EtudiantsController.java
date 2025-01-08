@@ -1,5 +1,6 @@
 package gestion.ecole.controllers.secretaire;
 
+import gestion.ecole.controllers.BundleAware;
 import gestion.ecole.models.Etudiant;
 import gestion.ecole.services.EtudiantService;
 import javafx.collections.FXCollections;
@@ -13,10 +14,13 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class EtudiantsController {
+public class EtudiantsController implements BundleAware {
 
-    // TableView et ses colonnes
+    public Button btnAjouter;
+    public Button btnModifier;
+    public Button btnSupprimer;
     @FXML
     private TableView<Etudiant> tableEtudiants;
     @FXML
@@ -24,13 +28,11 @@ public class EtudiantsController {
     @FXML
     private TableColumn<Etudiant, LocalDate> columnDateNaissance;
 
-    // Champs de recherche et messages
     @FXML
     private TextField searchField;
     @FXML
     private Label lblMessage;
 
-    // Champs du formulaire d'étudiant
     @FXML
     private TextField matriculeField, nomField, prenomField, emailField, promotionField;
     @FXML
@@ -38,10 +40,16 @@ public class EtudiantsController {
 
     private final EtudiantService etudiantService = new EtudiantService();
     private ObservableList<Etudiant> listeEtudiants;
+    private ResourceBundle bundle;
+
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+        updateTexts();
+    }
 
     @FXML
     public void initialize() {
-        // Initialisation des colonnes de la TableView
         columnNom.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNom()));
         columnPrenom.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPrenom()));
         columnEmail.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEmail()));
@@ -49,10 +57,14 @@ public class EtudiantsController {
         columnPromotion.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPromotion()));
         columnDateNaissance.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getDateNaissance()));
 
-        loadStudentsData();  // Chargement des données dans la TableView
+        loadStudentsData();
     }
 
-    // Méthode pour charger les étudiants dans la TableView
+    private void updateTexts() {
+        searchField.setPromptText(bundle.getString("search.placeholder"));
+        lblMessage.setText(""); // Reset message for consistency
+    }
+
     private void loadStudentsData() {
         listeEtudiants = FXCollections.observableArrayList(etudiantService.getAll());
         tableEtudiants.setItems(listeEtudiants);
@@ -60,16 +72,16 @@ public class EtudiantsController {
 
     @FXML
     public void handleAjouterEtudiant() {
-        ouvrirFormulaire(null);  // Ouvrir le formulaire pour un nouvel étudiant
+        ouvrirFormulaire(null);
     }
 
     @FXML
     public void handleModifierEtudiant() {
         Etudiant selectedEtudiant = tableEtudiants.getSelectionModel().getSelectedItem();
         if (selectedEtudiant != null) {
-            ouvrirFormulaire(selectedEtudiant);  // Ouvrir le formulaire pour modification
+            ouvrirFormulaire(selectedEtudiant);
         } else {
-            lblMessage.setText("Veuillez sélectionner un étudiant.");
+            lblMessage.setText(bundle.getString("student.select"));
         }
     }
 
@@ -78,43 +90,42 @@ public class EtudiantsController {
         Etudiant selectedEtudiant = tableEtudiants.getSelectionModel().getSelectedItem();
         if (selectedEtudiant != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation de suppression");
-            alert.setHeaderText("Voulez-vous vraiment supprimer cet étudiant ?");
-            alert.setContentText("Étudiant : " + selectedEtudiant.getNom() + " " + selectedEtudiant.getPrenom());
+            alert.setTitle(bundle.getString("student.delete.confirm.title"));
+            alert.setHeaderText(bundle.getString("student.delete.confirm.header"));
+            alert.setContentText(String.format(bundle.getString("student.delete.confirm.content"),
+                    selectedEtudiant.getNom(), selectedEtudiant.getPrenom()));
 
             if (alert.showAndWait().get() == ButtonType.OK) {
                 etudiantService.delete(selectedEtudiant.getId());
-                lblMessage.setText("Étudiant supprimé avec succès !");
-                loadStudentsData();  // Recharger la liste après suppression
+                lblMessage.setText(bundle.getString("student.delete.success"));
+                loadStudentsData();
             }
         } else {
-            lblMessage.setText("Veuillez sélectionner un étudiant.");
+            lblMessage.setText(bundle.getString("student.select"));
         }
     }
 
     private void ouvrirFormulaire(Etudiant etudiant) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/secretaire/EtudiantForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/secretaire/EtudiantForm.fxml"), bundle);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(etudiant == null ? "Ajouter un étudiant" : "Modifier un étudiant");
+            stage.setTitle(etudiant == null ? bundle.getString("student.add.title") : bundle.getString("student.modify.title"));
             stage.setScene(new Scene(loader.load()));
 
-            // Get the controller and set the student if editing
             EtudiantFormController controller = loader.getController();
             if (etudiant != null) {
                 controller.setEtudiant(etudiant);
             }
 
             stage.showAndWait();
-            loadStudentsData(); // Refresh the table after closing the form
+            loadStudentsData();
         } catch (Exception e) {
             e.printStackTrace();
-            lblMessage.setText("Erreur lors de l'ouverture du formulaire : " + e.getMessage());
+            lblMessage.setText(bundle.getString("form.open.error") + e.getMessage());
         }
     }
 
-    // Remplir les champs du formulaire pour la modification
     private void remplirChamps(Etudiant etudiant) {
         matriculeField.setText(etudiant.getMatricule());
         nomField.setText(etudiant.getNom());
@@ -124,7 +135,6 @@ public class EtudiantsController {
         promotionField.setText(etudiant.getPromotion());
     }
 
-    // Vider les champs du formulaire
     private void viderChamps() {
         matriculeField.clear();
         nomField.clear();
@@ -148,17 +158,17 @@ public class EtudiantsController {
             );
 
             if (nouvelEtudiant.getMatricule().isEmpty() || nouvelEtudiant.getNom().isEmpty()) {
-                lblMessage.setText("Veuillez remplir tous les champs obligatoires.");
+                lblMessage.setText(bundle.getString("student.fill.fields"));
                 return;
             }
 
             etudiantService.addStudent(nouvelEtudiant);
-            lblMessage.setText("Étudiant ajouté ou modifié avec succès !");
+            lblMessage.setText(bundle.getString("student.add.success"));
             Stage stage = (Stage) matriculeField.getScene().getWindow();
-            stage.close();  // Fermer le formulaire
+            stage.close();
         } catch (Exception e) {
             e.printStackTrace();
-            lblMessage.setText("Erreur lors de la validation des données.");
+            lblMessage.setText(bundle.getString("student.add.error") + e.getMessage());
         }
     }
 
@@ -173,12 +183,13 @@ public class EtudiantsController {
         String keyword = searchField.getText().toLowerCase();
         List<Etudiant> filteredList = etudiantService.search(keyword);
         listeEtudiants.setAll(filteredList);
-        lblMessage.setText(filteredList.isEmpty() ? "Aucun étudiant trouvé." : filteredList.size() + " étudiant(s) trouvé(s).");
+        lblMessage.setText(filteredList.isEmpty() ? bundle.getString("student.search.notfound")
+                : bundle.getString("student.search.found"));
     }
 
     @FXML
     private void handleRefreshTable() {
         loadStudentsData();
-        lblMessage.setText("Table mise à jour.");
+        lblMessage.setText(bundle.getString("table.refresh.success"));
     }
 }

@@ -13,12 +13,12 @@
     <top>
         <VBox spacing="10" style="-fx-padding: 10; -fx-background-color: #ffffff;">
             <HBox alignment="CENTER" spacing="10">
-            <Label style="-fx-font-size: 22px; -fx-text-fill: #000000; -fx-font-weight: bold;" text="Gestion des Professeurs" />
+                <Label style="-fx-font-size: 22px; -fx-text-fill: #000000; -fx-font-weight: bold;" text="%professor.management.title" />
             </HBox>
             <HBox alignment="CENTER" spacing="10">
-                <TextField fx:id="searchField" promptText="Rechercher par nom ou spécialité..." style="-fx-pref-width: 400px;" />
-                <Button onAction="#searchProfesseurs" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;" text="Rechercher" />
-                <Button onAction="#loadProfesseurs" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;" text="Réinitialiser" />
+                <TextField fx:id="searchField" promptText="%professor.search.prompt" style="-fx-pref-width: 400px;" />
+                <Button onAction="#searchProfesseurs" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;" text="%button.search" />
+                <Button onAction="#loadProfesseurs" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;" text="%button.reset" />
             </HBox>
         </VBox>
     </top>
@@ -26,30 +26,30 @@
         <VBox alignment="CENTER" prefHeight="434.0" prefWidth="857.0" spacing="20" style="-fx-padding: 20;">
             <TableView fx:id="professeurTable" onMouseClicked="#handleRowClick" prefHeight="300" prefWidth="800" style="-fx-background-color: white; -fx-border-color: #dcdcdc; -fx-border-width: 1;">
                 <columns>
-                    <TableColumn fx:id="idColumn" prefWidth="50" text="ID" />
-                    <TableColumn fx:id="nomColumn" prefWidth="200" text="Nom" />
-                    <TableColumn fx:id="prenomColumn" prefWidth="200" text="Prénom" />
-                    <TableColumn fx:id="specialiteColumn" prefWidth="350" text="Spécialité" />
+                    <TableColumn fx:id="idColumn" prefWidth="50" text="%column.id" />
+                    <TableColumn fx:id="nomColumn" prefWidth="200" text="%column.nom" />
+                    <TableColumn fx:id="prenomColumn" prefWidth="200" text="%column.prenom" />
+                    <TableColumn fx:id="specialiteColumn" prefWidth="350" text="%column.specialite" />
                 </columns>
             </TableView>
 
             <HBox alignment="CENTER" spacing="10">
-                <TextField fx:id="nomField" promptText="Nom" style="-fx-pref-width: 200px;" />
-                <TextField fx:id="prenomField" promptText="Prénom" style="-fx-pref-width: 200px;" />
-                <TextField fx:id="specialiteField" promptText="Spécialité" style="-fx-pref-width: 300px;" />
+                <TextField fx:id="nomField" promptText="%professor.name.prompt" style="-fx-pref-width: 200px;" />
+                <TextField fx:id="prenomField" promptText="%professor.firstname.prompt" style="-fx-pref-width: 200px;" />
+                <TextField fx:id="specialiteField" promptText="%professor.speciality.prompt" style="-fx-pref-width: 300px;" />
             </HBox>
 
             <HBox alignment="CENTER" spacing="15">
-                <Button fx:id="addButton" onAction="#addProfesseur" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Ajouter" />
-                <Button fx:id="updateButton" onAction="#updateProfesseur" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Modifier" />
-                <Button fx:id="deleteButton" onAction="#deleteProfesseur" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Supprimer" />
-                <Button fx:id="assignToModuleButton" onAction="#assignProfesseurToModule" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Affecter au module" />
-                <Button fx:id="exportButton" onAction="#exportProfesseursToCSV" style="-fx-background-color: #000000; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Exporter CSV" />
-                <Button fx:id="exportPdfButton" onAction="#exportProfesseursToPDF" style="-fx-background-color: #000000; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="Exporter PDF" />
+                <Button fx:id="addButton" onAction="#addProfesseur" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="%button.add" />
+                <Button fx:id="updateButton" onAction="#updateProfesseur" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="%button.update" />
+                <Button fx:id="deleteButton" onAction="#deleteProfesseur" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="%button.delete" />
+                <Button fx:id="assignToModuleButton" onAction="#assignProfesseurToModule" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="%button.assign.module" />
+                <Button fx:id="exportButton" onAction="#exportProfesseursToCSV" style="-fx-background-color: #000000; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="%button.export.csv" />
+                <Button fx:id="exportPdfButton" onAction="#exportProfesseursToPDF" style="-fx-background-color: #000000; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 20;" text="%button.export.pdf" />
             </HBox>
         </VBox>
     </center>
     <bottom>
-        <Label style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" text="Application de Gestion des Professeurs - 2024" BorderPane.alignment="CENTER" />
+        <Label style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" text="%professor.management.footer" BorderPane.alignment="CENTER" />
     </bottom>
 </BorderPane>
