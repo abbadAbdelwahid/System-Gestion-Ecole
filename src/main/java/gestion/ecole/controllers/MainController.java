@@ -66,7 +66,7 @@ public class MainController {
         this.bundle = ResourceBundle.getBundle("texts.messages", currentLocale);
 
         // Setup language selector
-        languageSelector.setItems(FXCollections.observableArrayList("Français", "English"));
+        languageSelector.setItems(FXCollections.observableArrayList("Français", "English","Español"));
         languageSelector.setValue("Français");
         languageSelector.setOnAction(event -> handleLanguageChange());
 
@@ -75,12 +75,24 @@ public class MainController {
 
     private void handleLanguageChange() {
         String selectedLanguage = languageSelector.getValue();
-        currentLocale = "English".equals(selectedLanguage) ? Locale.ENGLISH : Locale.FRENCH;
 
+        // Determine the selected language and set the appropriate locale
+        if ("English".equals(selectedLanguage)) {
+            currentLocale = Locale.ENGLISH;
+        } else if ("Français".equals(selectedLanguage)) {
+            currentLocale = Locale.FRENCH;
+        } else if ("Español".equals(selectedLanguage)) {
+            currentLocale = new Locale("es", "ES"); // Spanish locale
+        }
+
+        // Load the resource bundle for the selected locale
         bundle = ResourceBundle.getBundle("texts.messages", currentLocale);
+
+        // Update UI texts and refresh the current view
         updateTexts();
         refreshCurrentView();
     }
+
 
     private void updateTexts() {
         if (userLabel != null) {

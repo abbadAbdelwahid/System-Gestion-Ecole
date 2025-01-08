@@ -20,6 +20,7 @@
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="Français" />
                     <String fx:value="English" />
+                    <String fx:value="Español" />
                 </FXCollections>
             </items>
         </ChoiceBox>

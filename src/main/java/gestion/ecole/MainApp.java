@@ -24,8 +24,8 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(fxmlLoader.load());
 
-        // Configure the stage
-        primaryStage.setTitle("Gestion d'École"); // Translate the app title
+
+        primaryStage.setTitle("Gestion d'École");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
