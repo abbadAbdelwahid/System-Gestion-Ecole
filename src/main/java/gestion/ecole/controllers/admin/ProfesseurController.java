@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ProfesseurController implements MainControllerAware, BundleAware {
@@ -89,6 +90,12 @@ public class ProfesseurController implements MainControllerAware, BundleAware {
         String specialite = specialiteField.getText();
 
         if (!nom.isEmpty() && !prenom.isEmpty() && !specialite.isEmpty()) {
+            // Vérifier si un professeur avec le même nom et prénom existe déjà
+            if (professeurDAO.existsByNomAndPrenom(nom, prenom)) {
+                showAlert(bundle.getString("alert.warning"), bundle.getString("professor.exists"));
+                return; // Arrêter l'exécution si le professeur existe déjà
+            }
+
             try {
                 UtilisateurService utilisateurService = new UtilisateurService();
                 String username = nom + prenom;
@@ -116,14 +123,27 @@ public class ProfesseurController implements MainControllerAware, BundleAware {
         }
     }
 
+
     @FXML
     private void updateProfesseur() {
         Professeur selected = professeurTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            selected.setNom(nomField.getText());
-            selected.setPrenom(prenomField.getText());
-            selected.setSpecialite(specialiteField.getText());
+            String newNom = nomField.getText();
+            String newPrenom = prenomField.getText();
+            String newSpecialite = specialiteField.getText();
 
+            // Vérifier si un autre professeur possède le même nom et prénom
+            if (professeurDAO.existsByNomAndPrenomExcludingId(newNom, newPrenom, selected.getId())) {
+                showAlert(bundle.getString("alert.warning"), bundle.getString("professor.exists"));
+                return; // Arrêter l'exécution si un doublon est détecté
+            }
+
+            // Mettre à jour les champs
+            selected.setNom(newNom);
+            selected.setPrenom(newPrenom);
+            selected.setSpecialite(newSpecialite);
+
+            // Mettre à jour dans la base de données
             if (professeurDAO.update(selected)) {
                 loadProfesseurs();
                 clearFields();
@@ -136,21 +156,39 @@ public class ProfesseurController implements MainControllerAware, BundleAware {
         }
     }
 
+
     @FXML
     private void deleteProfesseur() {
         Professeur selected = professeurTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            if (professeurDAO.delete(selected.getId())) {
-                loadProfesseurs();
-                clearFields();
-                showAlert(bundle.getString("alert.success"), bundle.getString("professor.delete.success"));
-            } else {
-                showAlert(bundle.getString("alert.error"), bundle.getString("professor.delete.error"));
+            // Afficher une boîte de dialogue de confirmation
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle(bundle.getString("alert.confirmation"));
+            confirmationAlert.setHeaderText(bundle.getString("professor.delete.confirm"));
+            confirmationAlert.setContentText(bundle.getString("professor.delete.prompt"));
+
+            // Ajouter les boutons OK et Annuler
+            ButtonType okButton = new ButtonType(bundle.getString("button.ok"), ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButton = new ButtonType(bundle.getString("button.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
+            confirmationAlert.getButtonTypes().setAll(okButton, cancelButton);
+
+            // Attendre la réponse de l'utilisateur
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
+            if (result.isPresent() && result.get() == okButton) {
+                // Si l'utilisateur confirme, effectuer la suppression
+                if (professeurDAO.delete(selected.getId())) {
+                    loadProfesseurs();
+                    clearFields();
+                    showAlert(bundle.getString("alert.success"), bundle.getString("professor.delete.success"));
+                } else {
+                    showAlert(bundle.getString("alert.error"), bundle.getString("professor.delete.error"));
+                }
             }
         } else {
             showAlert(bundle.getString("alert.warning"), bundle.getString("professor.select"));
         }
     }
+
 
     @FXML
     private void searchProfesseurs() {
