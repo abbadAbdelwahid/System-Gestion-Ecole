@@ -1,13 +1,15 @@
 package gestion.ecole.controllers.secretaire;
 
+import gestion.ecole.controllers.BundleAware;
 import gestion.ecole.models.Etudiant;
 import gestion.ecole.services.EtudiantService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.time.LocalDate;
+import java.util.ResourceBundle;
 
-public class EtudiantFormController {
+public class EtudiantFormController implements BundleAware {
     @FXML
     private TextField matriculeField;
     @FXML
@@ -25,7 +27,14 @@ public class EtudiantFormController {
 
     private final EtudiantService etudiantService = new EtudiantService();
     private Etudiant etudiantToEdit;
+    private ResourceBundle bundle;
 
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+
+
+    }
     public void setEtudiant(Etudiant etudiant) {
         this.etudiantToEdit = etudiant;
         if (etudiant != null) {

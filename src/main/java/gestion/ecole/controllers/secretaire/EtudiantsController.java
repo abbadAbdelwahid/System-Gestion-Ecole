@@ -1,5 +1,6 @@
 package gestion.ecole.controllers.secretaire;
 
+import gestion.ecole.controllers.BundleAware;
 import gestion.ecole.models.Etudiant;
 import gestion.ecole.services.EtudiantService;
 import gestion.ecole.services.ExcelExportService;
@@ -19,8 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class EtudiantsController  {
+public class EtudiantsController implements BundleAware {
 
     // TableView et ses colonnes
     @FXML
@@ -45,13 +47,11 @@ public class EtudiantsController  {
     private final EtudiantService etudiantService = new EtudiantService();
     private ObservableList<Etudiant> listeEtudiants;
     private static TableView<Etudiant> staticTableEtudiants;
+    private ResourceBundle bundle;
 
-    @FXML
-    public void initialize() {
-        // Initialiser la référence statique
+    public void setResourceBundle(ResourceBundle bundle){
+        this.bundle = bundle;
         staticTableEtudiants = tableEtudiants;
-
-        // Initialisation des colonnes de la TableView
         columnNom.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getNom()));
         columnPrenom.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPrenom()));
         columnEmail.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEmail()));
@@ -59,9 +59,13 @@ public class EtudiantsController  {
         columnPromotion.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPromotion()));
         columnDateNaissance.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getDateNaissance()));
 
-        // Initialiser la liste et charger les données
+        updateTexts();
         listeEtudiants = FXCollections.observableArrayList();
         loadStudentsData();
+    }
+    @FXML
+    public void initialize() {
+
     }
 
     // Méthode pour charger les étudiants dans la TableView
@@ -89,7 +93,12 @@ public class EtudiantsController  {
         List<Etudiant> filteredList = etudiantService.search(keyword);
         listeEtudiants = FXCollections.observableArrayList(filteredList);
         tableEtudiants.setItems(listeEtudiants);
-        lblMessage.setText(filteredList.isEmpty() ? "Aucun étudiant trouvé." : filteredList.size() + " étudiant(s) trouvé(s).");
+
+        if (filteredList.isEmpty()) {
+            lblMessage.setText(bundle.getString("message.noStudentFound"));
+        } else {
+            lblMessage.setText(filteredList.size() + " " + bundle.getString("message.studentFound"));
+        }
     }
 
     // Méthode pour rafraîchir
@@ -119,39 +128,43 @@ public class EtudiantsController  {
         Etudiant selectedEtudiant = tableEtudiants.getSelectionModel().getSelectedItem();
         if (selectedEtudiant != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirmation de suppression");
-            alert.setHeaderText("Voulez-vous vraiment supprimer cet étudiant ?");
-            alert.setContentText("Étudiant : " + selectedEtudiant.getNom() + " " + selectedEtudiant.getPrenom());
+            alert.setTitle(bundle.getString("alert.delete.title"));
+            alert.setHeaderText(bundle.getString("alert.delete.header"));
+            alert.setContentText(bundle.getString("alert.delete.content") +
+                    selectedEtudiant.getNom() + " " + selectedEtudiant.getPrenom());
 
             if (alert.showAndWait().get() == ButtonType.OK) {
                 etudiantService.delete(selectedEtudiant.getId());
-                lblMessage.setText("Étudiant supprimé avec succès !");
-                loadStudentsData();  // Recharger la liste après suppression
+                lblMessage.setText(bundle.getString("message.studentDeleted"));
+                loadStudentsData();
             }
         } else {
-            lblMessage.setText("Veuillez sélectionner un étudiant.");
+            lblMessage.setText(bundle.getString("message.selectStudent"));
         }
     }
+
 
     private void ouvrirFormulaire(Etudiant etudiant) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gestion/ecole/secretaire/EtudiantForm.fxml"));
+            loader.setResources(bundle);
             Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(etudiant == null ? "Ajouter un étudiant" : "Modifier un étudiant");
-            stage.setScene(new Scene(loader.load()));
 
-            // Get the controller and set the student if editing
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            stage.setTitle(etudiant == null ? bundle.getString("form.title.add.student") : bundle.getString("form.title.edit.student"));
+
+            stage.setScene(new Scene(loader.load()));
             EtudiantFormController controller = loader.getController();
+            controller.setResourceBundle(bundle);
             if (etudiant != null) {
                 controller.setEtudiant(etudiant);
             }
 
             stage.showAndWait();
-            loadStudentsData(); // Refresh the table after closing the form
+            loadStudentsData();
         } catch (Exception e) {
-            e.printStackTrace();
-            lblMessage.setText("Erreur lors de l'ouverture du formulaire : " + e.getMessage());
+            lblMessage.setText(bundle.getString("message.formError") + e.getMessage());
         }
     }
 
@@ -223,56 +236,57 @@ public class EtudiantsController  {
     @FXML
     private void handleExportPDF() {
         try {
-            // Rafraîchir d'abord la liste
             refreshListeEtudiants();
 
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Enregistrer le PDF");
+            fileChooser.setTitle(bundle.getString("filechooser.title.pdf"));
             fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("Fichiers PDF (*.pdf)", "*.pdf")
+                    new FileChooser.ExtensionFilter(bundle.getString("filechooser.filter.pdf"), "*.pdf")
             );
 
             File file = fileChooser.showSaveDialog(tableEtudiants.getScene().getWindow());
 
             if (file != null) {
                 exportService.generatePDF(listeEtudiants, file.getAbsolutePath());
-                lblMessage.setText("Le PDF a été généré avec succès !");
+                lblMessage.setText(bundle.getString("message.pdfSuccess"));
             }
         } catch (Exception e) {
-            lblMessage.setText("Erreur lors de la génération du PDF : " + e.getMessage());
+            lblMessage.setText(bundle.getString("message.pdfError") + e.getMessage());
         }
     }
 
     @FXML
     private void handleExportCSV() {
         try {
-            // Rafraîchir d'abord la liste
             refreshListeEtudiants();
 
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Enregistrer en Excel");
+            fileChooser.setTitle(bundle.getString("filechooser.title.excel"));
             fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("Fichiers Excel (*.xlsx)", "*.xlsx")
+                    new FileChooser.ExtensionFilter(bundle.getString("filechooser.filter.excel"), "*.xlsx")
             );
 
-            // Utilisez le dossier Documents par défaut
             String userHome = System.getProperty("user.home");
             fileChooser.setInitialDirectory(new File(userHome + "/Documents"));
 
             File file = fileChooser.showSaveDialog(tableEtudiants.getScene().getWindow());
 
             if (file != null) {
-                // Créer une instance du nouveau service Excel
                 ExcelExportService excelService = new ExcelExportService();
                 excelService.generateExcel(listeEtudiants, file.getAbsolutePath());
-                lblMessage.setText("Le fichier Excel a été généré avec succès !");
+                lblMessage.setText(bundle.getString("message.excelSuccess"));
             }
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur");
-            alert.setHeaderText(null);
-            alert.setContentText("Erreur lors de la génération du fichier Excel : " + e.getMessage());
-            alert.showAndWait();
+            lblMessage.setText(bundle.getString("message.excelError") + e.getMessage());
         }
+    }
+
+    private void updateTexts() {
+        columnNom.setText(bundle.getString("column.nom"));
+        columnPrenom.setText(bundle.getString("column.prenom"));
+        columnEmail.setText(bundle.getString("column.email"));
+        columnMatricule.setText(bundle.getString("column.matricule"));
+        columnPromotion.setText(bundle.getString("column.promotion"));
+        columnDateNaissance.setText(bundle.getString("column.dateNaissance"));
     }
 }

@@ -1,5 +1,6 @@
 package gestion.ecole.controllers.secretaire;
 
+import gestion.ecole.controllers.BundleAware;
 import gestion.ecole.models.Inscription;
 import gestion.ecole.models.Module;
 import gestion.ecole.models.Etudiant;
@@ -16,13 +17,13 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.TableColumn;
 
-public class InscriptionsController {
+public class InscriptionsController implements BundleAware {
     @FXML private TableView<Inscription> tableInscriptions;
     @FXML private ComboBox<Module> moduleComboBox;
     @FXML private ComboBox<Etudiant> etudiantComboBox;
@@ -39,10 +40,14 @@ public class InscriptionsController {
     @FXML private TableColumn<Inscription, String> columnEtudiant;
     @FXML private TableColumn<Inscription, String> columnModule;
     @FXML private TableColumn<Inscription, LocalDate> columnDate;
+    private ResourceBundle bundle;
+
+    public void setResourceBundle(ResourceBundle bundle) {
+        this.bundle = bundle;
+    }
 
     @FXML
     public void initialize() {
-        // Configuration des colonnes
         columnId.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getId()));
 
         columnEtudiant.setCellValueFactory(cellData -> {
@@ -59,17 +64,12 @@ public class InscriptionsController {
             );
         });
 
-        columnDate.setCellValueFactory(cellData ->
-                new SimpleObjectProperty<>(cellData.getValue().getDateInscription()));
+        columnDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDateInscription()));
 
-        // Initialisation des ComboBox
         moduleComboBox.setItems(FXCollections.observableArrayList(moduleService.getAll()));
         etudiantComboBox.setItems(FXCollections.observableArrayList(etudiantService.getAll()));
-
-        // Configuration de la date par défaut
         datePicker.setValue(LocalDate.now());
 
-        // Chargement initial des données
         refreshInscriptions();
     }
 
@@ -84,11 +84,11 @@ public class InscriptionsController {
             );
 
             if (inscriptionService.insert(newInscription)) {
-                messageLabel.setText("Inscription ajoutée avec succès");
+                messageLabel.setText(bundle.getString("message.addSuccess"));
                 refreshInscriptions();
                 clearInputs();
             } else {
-                messageLabel.setText("Erreur lors de l'ajout de l'inscription");
+                messageLabel.setText(bundle.getString("message.addError"));
             }
         }
     }
@@ -96,9 +96,9 @@ public class InscriptionsController {
     @FXML
     private void handleExportPDF() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Enregistrer le PDF");
+        fileChooser.setTitle(bundle.getString("filechooser.title.pdf"));
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf")
+                new FileChooser.ExtensionFilter(bundle.getString("filechooser.filter.pdf"), "*.pdf")
         );
 
         File file = fileChooser.showSaveDialog(null);
@@ -108,9 +108,9 @@ public class InscriptionsController {
                         FXCollections.observableArrayList(inscriptionService.getAll()),
                         file.getAbsolutePath()
                 );
-                messageLabel.setText("PDF généré avec succès");
+                messageLabel.setText(bundle.getString("message.pdfSuccess"));
             } catch (Exception e) {
-                messageLabel.setText("Erreur lors de la génération du PDF: " + e.getMessage());
+                messageLabel.setText(bundle.getString("message.pdfError") + e.getMessage());
             }
         }
     }
@@ -119,33 +119,33 @@ public class InscriptionsController {
     private void handleExportCSV() {
         try {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Enregistrer en Excel");
+            fileChooser.setTitle(bundle.getString("filechooser.title.excel"));
             fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("Fichiers Excel (*.xlsx)", "*.xlsx")
+                    new FileChooser.ExtensionFilter(bundle.getString("filechooser.filter.excel"), "*.xlsx")
             );
 
             File file = fileChooser.showSaveDialog(null);
             if (file != null) {
-                List<Inscription> inscriptions = inscriptionService.getAll(); // Assurez-vous d'avoir les données à jour
+                List<Inscription> inscriptions = inscriptionService.getAll();
                 exportService.generateExcel(inscriptions, file.getAbsolutePath());
-                messageLabel.setText("Le fichier Excel a été généré avec succès !");
+                messageLabel.setText(bundle.getString("message.excelSuccess"));
             }
         } catch (Exception e) {
-            messageLabel.setText("Erreur lors de la génération du fichier Excel : " + e.getMessage());
+            messageLabel.setText(bundle.getString("message.excelError") + e.getMessage());
         }
     }
 
     private boolean validateInputs() {
         if (etudiantComboBox.getValue() == null) {
-            messageLabel.setText("Veuillez sélectionner un étudiant");
+            messageLabel.setText(bundle.getString("message.selectStudent"));
             return false;
         }
         if (moduleComboBox.getValue() == null) {
-            messageLabel.setText("Veuillez sélectionner un module");
+            messageLabel.setText(bundle.getString("message.selectModule"));
             return false;
         }
         if (datePicker.getValue() == null) {
-            messageLabel.setText("Veuillez sélectionner une date");
+            messageLabel.setText(bundle.getString("message.selectDate"));
             return false;
         }
         return true;
@@ -159,7 +159,6 @@ public class InscriptionsController {
 
     private void refreshInscriptions() {
         var inscriptions = inscriptionService.getAll();
-        System.out.println("Nombre d'inscriptions chargées: " + inscriptions.size());
         tableInscriptions.setItems(FXCollections.observableArrayList(inscriptions));
     }
 
@@ -167,21 +166,21 @@ public class InscriptionsController {
     private void handleSupprimerInscription() {
         Inscription selectedInscription = tableInscriptions.getSelectionModel().getSelectedItem();
         if (selectedInscription == null) {
-            messageLabel.setText("Veuillez sélectionner une inscription à supprimer");
+            messageLabel.setText(bundle.getString("message.selectInscription"));
             return;
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation de suppression");
-        alert.setHeaderText("Supprimer l'inscription");
-        alert.setContentText("Êtes-vous sûr de vouloir supprimer cette inscription ?");
+        alert.setTitle(bundle.getString("alert.delete.title"));
+        alert.setHeaderText(bundle.getString("alert.delete.header"));
+        alert.setContentText(bundle.getString("alert.delete.content"));
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             if (inscriptionService.delete(selectedInscription.getId())) {
-                messageLabel.setText("Inscription supprimée avec succès");
+                messageLabel.setText(bundle.getString("message.deleteSuccess"));
                 refreshInscriptions();
             } else {
-                messageLabel.setText("Erreur lors de la suppression de l'inscription");
+                messageLabel.setText(bundle.getString("message.deleteError"));
             }
         }
     }
@@ -189,7 +188,6 @@ public class InscriptionsController {
     @FXML
     private TextField searchField;
 
-    // Méthode de recherche
     @FXML
     private void handleRechercher() {
         String searchTerm = searchField.getText().toLowerCase();
@@ -209,16 +207,14 @@ public class InscriptionsController {
         });
 
         tableInscriptions.setItems(filteredList);
-        messageLabel.setText(filteredList.isEmpty() ? "Aucune inscription trouvée."
-                : filteredList.size() + " inscription(s) trouvée(s).");
+        messageLabel.setText(filteredList.isEmpty() ? bundle.getString("message.noResults")
+                : filteredList.size() + " " + bundle.getString("message.resultsFound"));
     }
 
-    // Méthode de rafraîchissement
     @FXML
     private void handleRefresh() {
         searchField.clear();
         refreshInscriptions();
-        messageLabel.setText("Liste des inscriptions mise à jour.");
+        messageLabel.setText(bundle.getString("message.listUpdated"));
     }
-
 }

@@ -15,43 +15,43 @@
             </padding>
 
             <!-- Titre -->
-            <Label text="Formulaire Étudiant"
+            <Label text="%form.title"
                    style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
 
             <!-- Champs -->
             <VBox spacing="5">
-                <Label text="Matricule *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-                <TextField fx:id="matriculeField"
+                <Label text="%form.matricule" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="matriculeField" promptText="%form.matricule.prompt"
                            style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Nom *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-                <TextField fx:id="nomField"
+                <Label text="%form.nom" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="nomField" promptText="%form.nom.prompt"
                            style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Prénom *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-                <TextField fx:id="prenomField"
+                <Label text="%form.prenom" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="prenomField" promptText="%form.prenom.prompt"
                            style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Date de naissance *" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-                <DatePicker fx:id="dateNaissanceField" maxWidth="Infinity"
+                <Label text="%form.dateNaissance" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <DatePicker fx:id="dateNaissanceField" promptText="%form.dateNaissance.prompt" maxWidth="Infinity"
                             style="-fx-background-radius: 4;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Email" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-                <TextField fx:id="emailField"
+                <Label text="%form.email" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="emailField" promptText="%form.email.prompt"
                            style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Promotion" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-                <TextField fx:id="promotionField"
+                <Label text="%form.promotion" style="-fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                <TextField fx:id="promotionField" promptText="%form.promotion.prompt"
                            style="-fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #dcdde1; -fx-border-radius: 4;"/>
             </VBox>
 
@@ -59,9 +59,9 @@
 
             <!-- Boutons -->
             <HBox alignment="CENTER" spacing="15">
-                <Button onAction="#validerEtudiant" text="Valider"
+                <Button onAction="#validerEtudiant" text="%form.button.validate"
                         style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 30; -fx-background-radius: 4;"/>
-                <Button onAction="#annulerAction" text="Annuler"
+                <Button onAction="#annulerAction" text="%form.button.cancel"
                         style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 30; -fx-background-radius: 4;"/>
             </HBox>
         </VBox>
