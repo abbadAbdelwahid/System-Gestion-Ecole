@@ -176,6 +176,40 @@ public class ProfesseurDAO implements CRUD<Professeur> {
     }
 
 
+    public boolean existsByNomAndPrenom(String nom, String prenom) {
+        String query = "SELECT COUNT(*) AS count FROM professeurs WHERE nom = ? AND prenom = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, nom);
+            ps.setString(2, prenom);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count") > 0; // Retourne true si un résultat est trouvé
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking existence of professeur: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean existsByNomAndPrenomExcludingId(String nom, String prenom, int id) {
+        String query = "SELECT COUNT(*) AS count FROM professeurs WHERE nom = ? AND prenom = ? AND id != ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, nom);
+            ps.setString(2, prenom);
+            ps.setInt(3, id); // Exclure l'ID du professeur en cours de modification
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count") > 0; // Retourne true si un résultat est trouvé
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking existence of professeur: " + e.getMessage());
+        }
+        return false;
+    }
+
+
+
+
 
 
 }

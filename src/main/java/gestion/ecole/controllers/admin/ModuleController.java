@@ -20,6 +20,7 @@ import gestion.ecole.models.Professeur;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ModuleController implements BundleAware {
@@ -76,15 +77,50 @@ public class ModuleController implements BundleAware {
         moduleList.setAll(moduleDAO.getAll());
         moduleTable.setItems(moduleList);
     }
-
     @FXML
     private void addModule() {
-        Module module = new Module(0, nomField.getText(), codeField.getText(), Integer.parseInt(professeurIdField.getText()));
-        if (moduleDAO.insert(module)) {
-            loadModules();
-            clearFields();
+        // Vérification des champs vides
+        String nom = nomField.getText();
+        String code = codeField.getText();
+        String professeurIdText = professeurIdField.getText();
+
+        if (nom.isEmpty() || code.isEmpty() || professeurIdText.isEmpty()) {
+            showAlert(bundle.getString("alert.warning"), bundle.getString("module.fill.fields"));
+            return; // Arrêter l'exécution si des champs sont vides
+        }
+
+        try {
+            int professeurId = Integer.parseInt(professeurIdText);
+            Module module = new Module(0, nom, code, professeurId);
+
+            // Afficher une boîte de dialogue de confirmation
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle(bundle.getString("alert.confirmation"));
+            confirmationAlert.setHeaderText(bundle.getString("module.add.confirm"));
+            confirmationAlert.setContentText(bundle.getString("module.add.prompt"));
+
+            ButtonType okButton = new ButtonType(bundle.getString("button.ok"), ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButton = new ButtonType(bundle.getString("button.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
+            confirmationAlert.getButtonTypes().setAll(okButton, cancelButton);
+
+            Optional<ButtonType> result = confirmationAlert.showAndWait();
+            if (result.isPresent() && result.get() == okButton) {
+                // Effectuer l'ajout si confirmé
+                if (moduleDAO.insert(module)) {
+                    loadModules();
+                    clearFields();
+                    showAlert(bundle.getString("alert.success"), bundle.getString("module.add.success"));
+                } else {
+                    showAlert(bundle.getString("alert.error"), bundle.getString("module.add.error"));
+                }
+            }
+        } catch (NumberFormatException e) {
+            showAlert(bundle.getString("alert.error"), bundle.getString("module.invalid.professor.id"));
+        } catch (Exception e) {
+            showAlert(bundle.getString("alert.error"), bundle.getString("generic.error") + e.getMessage());
         }
     }
+
 
     @FXML
     private void updateModule() {
