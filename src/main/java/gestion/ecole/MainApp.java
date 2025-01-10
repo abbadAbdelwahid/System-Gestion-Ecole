@@ -11,14 +11,8 @@ import java.util.ResourceBundle;
 public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-
         ResourceBundle bundle = ResourceBundle.getBundle("texts.messages", Locale.FRENCH);
-
         System.out.println(bundle.getString("app.title"));
-
-
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gestion/ecole/login.fxml"));
 
 

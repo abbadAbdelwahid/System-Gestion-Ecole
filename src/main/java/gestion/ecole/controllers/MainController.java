@@ -8,7 +8,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -112,26 +115,26 @@ public class MainController {
         switch (normalizedRole) {
             case "admin":
                 sidebar.getChildren().addAll(
-                        createButton(bundle.getString("sidebar.dashboard"), "/gestion/ecole/admin/DashboardView.fxml"),
-                        createButton(bundle.getString("sidebar.etudiants"), "/gestion/ecole/secretaire/EtudiantsView.fxml"),
-                        createButton(bundle.getString("sidebar.inscriptions"), "/gestion/ecole/secretaire/InscriptionsView.fxml"),
-                        createButton(bundle.getString("sidebar.modules"), "/gestion/ecole/admin/ModulesView.fxml"),
-                        createButton(bundle.getString("sidebar.professeurs"), "/gestion/ecole/admin/ProfesseursView.fxml"),
+                        createButton(bundle.getString("sidebar.dashboard"), "/gestion/ecole/admin/DashboardView.fxml","/icons/dashboard-icon.png"),
+                        createButton(bundle.getString("sidebar.etudiants"), "/gestion/ecole/secretaire/EtudiantsView.fxml","/icons/students-icon.png"),
+                        createButton(bundle.getString("sidebar.inscriptions"), "/gestion/ecole/secretaire/InscriptionsView.fxml","/icons/registrations-icon.png"),
+                        createButton(bundle.getString("sidebar.modules"), "/gestion/ecole/admin/ModulesView.fxml","/icons/modules-icon.png"),
+                        createButton(bundle.getString("sidebar.professeurs"), "/gestion/ecole/admin/ProfesseursView.fxml","/icons/professors-icon.png"),
                         logoutButton
                 );
                 break;
 
             case "secretary":
                 sidebar.getChildren().addAll(
-                        createButton(bundle.getString("sidebar.etudiants"), "/gestion/ecole/secretaire/EtudiantsView.fxml"),
-                        createButton(bundle.getString("sidebar.inscriptions"), "/gestion/ecole/secretaire/InscriptionsView.fxml"),
+                        createButton(bundle.getString("sidebar.etudiants"), "/gestion/ecole/secretaire/EtudiantsView.fxml","/icons/students-icon.png"),
+                        createButton(bundle.getString("sidebar.inscriptions"), "/gestion/ecole/secretaire/InscriptionsView.fxml", "/icons/registrations-icon.png"),
                         logoutButton
                 );
                 break;
 
             case "professor":
                 sidebar.getChildren().addAll(
-                        createButton(bundle.getString("sidebar.mesCours"), "/gestion/ecole/professeur/ModulesView.fxml"),
+                        createButton(bundle.getString("sidebar.mesCours"), "/gestion/ecole/professeur/ModulesView.fxml","/icons/modules-icon.png"),
                         logoutButton
                 );
                 break;
@@ -141,9 +144,15 @@ public class MainController {
         }
     }
 
-    private Button createButton(String text, String fxmlPath) {
+    private Button createButton(String text, String fxmlPath,String iconPath) {
         Button button = new Button(text);
-        button.setStyle("-fx-background-color: #395467; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+        Image iconImage = new Image(getClass().getResourceAsStream(iconPath));
+        ImageView icon = new ImageView(iconImage);
+        icon.setFitHeight(20);
+        icon.setFitWidth(20);
+        button.setGraphic(icon);
+        button.setContentDisplay(ContentDisplay.LEFT);
+        button.setStyle("-fx-background-color: rgba(57,84,103,0); -fx-text-fill: #ffffff; -fx-pref-width: 200; -fx-alignment: center-left;");
 
         button.setOnAction(event -> {
             loadView(fxmlPath);
@@ -157,10 +166,10 @@ public class MainController {
             if (node == logoutButton) {
                 node.setStyle("-fx-background-color: #8c220a; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
             } else if (node instanceof Button) {
-                node.setStyle("-fx-background-color: #4a6983; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+                node.setStyle("-fx-background-color: rgba(74,105,131,0); -fx-text-fill: #ffffff; -fx-pref-width: 200; -fx-alignment: center-left;");
             }
         });
-        button.setStyle("-fx-background-color: #395467; -fx-text-fill: #ffffff; -fx-pref-width: 200;");
+        button.setStyle("-fx-background-color: #395467; -fx-text-fill: #ffffff; -fx-pref-width: 200; -fx-alignment: center-left;");
     }
 
     public void setContentPane(Node node) {
