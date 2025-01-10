@@ -98,17 +98,32 @@ public class ProfesseurController implements MainControllerAware, BundleAware {
 
             try {
                 UtilisateurService utilisateurService = new UtilisateurService();
+
+                // Générer le username
                 String username = nom + prenom;
-                String password = "password";
+
+                // Générer un mot de passe aléatoire
+                int randomNumber = (int) (Math.random() * 1000); // Nombre aléatoire entre 0 et 999
+                String password = nom + randomNumber;
+
+                // Définir le rôle
                 String role = "professor";
 
+                // Ajouter l'utilisateur
                 Utilisateur utilisateur = utilisateurService.addUser(username, password, role);
                 if (utilisateur != null) {
                     Professeur professeur = new Professeur(0, nom, prenom, specialite, utilisateur.getId());
                     if (professeurDAO.insert(professeur)) {
                         loadProfesseurs();
                         clearFields();
-                        showAlert(bundle.getString("alert.success"), bundle.getString("professor.add.success"));
+
+                        // Afficher le nom d'utilisateur et le mot de passe
+                        String successMessage = String.format(
+                                bundle.getString("professor.add.success.with.credentials"),
+                                username,
+                                password
+                        );
+                        showAlert(bundle.getString("alert.success"), successMessage);
                     } else {
                         showAlert(bundle.getString("alert.error"), bundle.getString("professor.add.error"));
                     }
@@ -122,6 +137,7 @@ public class ProfesseurController implements MainControllerAware, BundleAware {
             showAlert(bundle.getString("alert.warning"), bundle.getString("professor.fill.fields"));
         }
     }
+
 
 
     @FXML
